@@ -22,6 +22,7 @@ const DashboardContainer = styled.div`
     height: 100vh;
     width: calc(100vw - 270px);
     background-color: #F9FAFE;
+    padding: 40px;
 `;
 
 export default Container;
