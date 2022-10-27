@@ -16,7 +16,7 @@ const SideBar = () => {
             <NavItems className='navItems'>
                 <NavLink to="/"><IoHome className="sideBarIcon" /> Accueil</NavLink>
                 <NavLink to="/"><MdOutlineDashboard className="sideBarIcon" /> Tableau de bord</NavLink>
-                <NavLink to="/"><MdGroups className="sideBarIcon" /> Groupes autonomes</NavLink>
+                <NavLink to="/groupes-autonomes"><MdGroups className="sideBarIcon" /> Groupes autonomes</NavLink>
                 <NavLink to="/"><IoMegaphoneSharp className="sideBarIcon" /> Groupes pris en charges</NavLink>
                 <NavLink to="/"><FaChild className="sideBarIcon" /> Junior & co</NavLink>
                 <SideBarSeparator />
