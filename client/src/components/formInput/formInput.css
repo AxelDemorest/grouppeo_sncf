@@ -1,0 +1,18 @@
+input:invalid[focused="true"]{
+    border: 1px solid #d01e1e;
+}
+
+input:invalid[focused="true"] ~ div {
+    display: block;
+}
+
+.singleFormInput {
+    outline: none;
+    border: none;
+    border-radius: 5px;
+    font-size: 17px;
+    padding: 13px 0 13px 13px;
+    margin-bottom: 35px;
+    color: grey;
+    box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+}

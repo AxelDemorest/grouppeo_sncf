@@ -6,13 +6,4 @@ import { GroupService } from "../service/group.service";
 export class GroupController {
     constructor(private readonly groupService: GroupService) {}
 
-    @Post('/group')
-    async createGroups(@Res() res, @Body() groups: createGroupDTO[]) {
-        const createGroups = await this.groupService.createGroups(groups);
-        return res.status(HttpStatus.OK).json({
-            message: 'Groups has been submitted successfully!',
-            post: createGroups,
-        });
-    }
-
 }

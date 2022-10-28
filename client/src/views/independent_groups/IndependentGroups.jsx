@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 import { utils, read } from 'xlsx';
+import Container from '../../components/container/Container';
 
 const EXTENSIONS = ['xlsx', 'csv', 'xls']
 
@@ -145,23 +146,25 @@ const IndependentGroups = () => {
     ];
 
     return (
-        <div>
-            <Header>
-                <HeaderTitle>Suivi des groupes autonomes</HeaderTitle>
-            </Header>
-            <input type="file" onChange={importExcel} />
-            <ListGroups>
-                <CustomTable>
-                    <thead>
-                        <tr>
-                            <th>
-                                
-                            </th>
-                        </tr>
-                    </thead>
-                </CustomTable>
-            </ListGroups>
-        </div>
+        <Container>
+            <div>
+                <Header>
+                    <HeaderTitle>Suivi des groupes autonomes</HeaderTitle>
+                </Header>
+                <input type="file" onChange={importExcel} />
+                <ListGroups>
+                    <CustomTable>
+                        <thead>
+                            <tr>
+                                <th>
+                                    
+                                </th>
+                            </tr>
+                        </thead>
+                    </CustomTable>
+                </ListGroups>
+            </div>
+        </Container>
     );
 };
 

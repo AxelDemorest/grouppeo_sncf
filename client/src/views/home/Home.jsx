@@ -1,15 +1,18 @@
 import React from 'react';
 import styled from 'styled-components';
+import Container from '../../components/container/Container';
 
 const Home = () => {
     const current = new Date();
     const date = `${current.getDate()}/${current.getMonth()+1}/${current.getFullYear()}`;
 
     return (
-        <div>
-            <DashboardTitle>Tableau de bord</DashboardTitle>
-            <CurrentDate>{date}</CurrentDate>
-        </div>
+        <Container>
+            <div>
+                <DashboardTitle>Tableau de bord</DashboardTitle>
+                <CurrentDate>{date}</CurrentDate>
+            </div>
+        </Container>
     );
 };
 
