@@ -43,4 +43,10 @@ export class TrainService {
         await this.trainsRepository.save(createTrains);
         return createTrains;
     }
+
+    async getAllTrains(): Promise<Train[]> {
+        return await this.trainsRepository.find({
+            relations: ['train_groups'],
+        });
+      }   
 }

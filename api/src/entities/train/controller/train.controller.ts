@@ -1,4 +1,4 @@
-import { Body, Controller, HttpStatus, Post, Res } from "@nestjs/common";
+import { Body, Controller, HttpStatus, Post, Get, Res } from "@nestjs/common";
 import { createTrainDTO, TrainDTO } from "../models/train.dto";
 import { TrainService } from "../service/train.service";
 
@@ -15,4 +15,8 @@ export class TrainController {
         });
     }
 
+    @Get('/train')
+    async getTrains() {
+        return this.trainService.getAllTrains();
+    }
 }

@@ -2,24 +2,25 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 import { utils, read } from 'xlsx';
+import { BiImport } from 'react-icons/bi';
 import Container from '../../components/container/Container';
+import NestedTableTrains from '../../components/nestedTableTrain/NestedTableTrains';
 
 const EXTENSIONS = ['xlsx', 'csv', 'xls']
 
 const IndependentGroups = () => {
-    const [data, setData] = useState();
+    const [data, setData] = useState([]);
     const [trains, setTrains] = useState();
 
     useEffect(() => {
-        const createTrains = async () => {
-            const trainRequest = await axios.post('http://localhost:3001/train/train', data);
-            console.log(trainRequest.data);
+        const getTrains = async () => {
+            const { data } = await axios.get('http://localhost:3001/train/train');
+            setData(data);
+            console.log(data);
         };
 
-        if(data) {
-            createTrains();
-        }
-    }, [data, trains]);
+        getTrains();
+    }, []);
 
     const getExtension = (file) => {
         const parts = file.name.split('.');
@@ -60,6 +61,7 @@ const IndependentGroups = () => {
             'Commentaires' : 'group_comment',
         };
 
+        // TODO: Check si le train existe déjà dans le tableau
         data.forEach(row => {
             let rowData = {};
             let trainData = {};
@@ -80,7 +82,6 @@ const IndependentGroups = () => {
             }
         });
         setTrains(trainRows);
-        console.log(rows);
         return rows;
     };
 
@@ -96,30 +97,7 @@ const IndependentGroups = () => {
             const workSheet = workBook.Sheets[workSheetName];
 
             const fileData = utils.sheet_to_json(workSheet, { header: 1, raw: false, dateNF: 'dd-mm-yyyy hh:mm' });
-            // console.log(fileData);
             const headers = fileData[0];
-            /*const headersReplace = [
-                'date', 
-                'heure', 
-                'no_train', 
-                'destination',
-                'nom_groupe',
-                'total_voyageurs',
-                'no_voiture',
-                'type_groupe',
-                'prestation',
-                'point_rdv',
-                'heure_rdv',
-                'resp_jour_depart',
-                'tel_resp_jour_depart',
-                'bus_nombre',
-                'responsable',
-                'responsable_tel',
-                'nom_vendeur',
-                'tel_vendeur',
-                'dpx',
-                'commentaire'
-            ];*/
             // const heads = headers.map(head => ({ title: head, field: head }))
             fileData.splice(0, 1);
             setData(convertToJson(headers, fileData));
@@ -134,15 +112,30 @@ const IndependentGroups = () => {
         }
     }
 
-    const headTable = [
-        'Dates', 
-        'Heures', 
-        'No de train', 
-        'Destination', 
-        'Nom groupe' , 
-        'Nbre place', 
-        'No de voiture', 
-        'Nature groupe',
+    const trainColumns = [
+        { title: 'Dates', dataIndex: 'train_date', key: 'train_date' },
+        { title: 'No de train', dataIndex: 'train_number', key: 'train_number' },
+        { title: 'Heures', dataIndex: 'train_hour', key: 'train_hour' },
+    ];
+
+    const expandedColumns = [
+        { title: 'Destination', dataIndex: 'group_destination', key: 'group_destination' },
+        { title: 'Nom groupe', dataIndex: 'group_name', key: 'group_name' },
+        { title: 'Total voyageurs', dataIndex: 'group_total_travellers', key: 'group_total_travellers' },
+        { title: 'N° Voiture', dataIndex: 'group_car_number', key: 'group_car_number' },
+        { title: 'Nature groupe', dataIndex: 'group_type', key: 'group_type' },
+        { title: 'Prestation', dataIndex: 'group_prestation', key: 'group_prestation' },
+        { title: 'Point RV', dataIndex: 'group_meeting_point', key: 'group_meeting_point' },
+        { title: 'Heure RV', dataIndex: 'group_meeting_time', key: 'group_meeting_time' },
+        { title: 'Responsable JDD', dataIndex: 'group_responsable_departure_day', key: 'group_responsable_departure_day' },
+        { title: 'Tel. responsable JDD', dataIndex: 'group_responsable_phone_departure_day', key: 'group_responsable_phone_departure_day' },
+        { title: 'Bus (nbre)', dataIndex: 'group_bus_number', key: 'group_bus_number' },
+        { title: 'Responsable', dataIndex: 'group_responsable', key: 'group_responsable' },
+        { title: 'Tel. responsable', dataIndex: 'group_responsable_phone', key: 'group_responsable_phone' },
+        { title: 'Nom vendeur', dataIndex: 'group_seller_name', key: 'group_seller_name' },
+        { title: 'Tel. vendeur', dataIndex: 'group_seller_phone', key: 'group_seller_phone' },
+        { title: 'DPX (1 par train sensible)', dataIndex: 'group_dpx', key: 'group_dpx' },
+        { title: 'Commentaires', dataIndex: 'group_comment', key: 'group_comment' },
     ];
 
     return (
@@ -150,18 +143,16 @@ const IndependentGroups = () => {
             <div>
                 <Header>
                     <HeaderTitle>Suivi des groupes autonomes</HeaderTitle>
+                    <div>
+                        <FileInputLabel htmlFor="inputFile">
+                            <BiImport style={{ marginRight: '5px', fontSize: '18px' }} />
+                            Importer les groupes de saison
+                            <FileInput type="file" id='inputFile' onChange={importExcel} />
+                        </FileInputLabel>
+                    </div>
                 </Header>
-                <input type="file" onChange={importExcel} />
                 <ListGroups>
-                    <CustomTable>
-                        <thead>
-                            <tr>
-                                <th>
-                                    
-                                </th>
-                            </tr>
-                        </thead>
-                    </CustomTable>
+                    <NestedTableTrains columns={trainColumns} expandedColumns={expandedColumns} data={data} />
                 </ListGroups>
             </div>
         </Container>
@@ -171,19 +162,43 @@ const IndependentGroups = () => {
 const Header = styled.div`
     background-color: #FFFFFF;
     border-bottom: 1px solid #d1d1d1;
+    padding: 30px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
 `;
 
 const HeaderTitle = styled.h1`
     margin: 0;
-    padding: 30px;
     margin-left: 15px;
     color: #3c3c3c;
+    font-weight: bold;
+`;
+
+const FileInput = styled.input`
+    display: none;
+`;
+
+const FileInputLabel = styled.label`
+    &:hover {
+        background-color: #fbe2eb;
+    }
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    background-color: #ffeff5;
+    color: #fd95b7;
+    padding: 10px;
+    display: flex;
+    font-size: 15px;
+    flex-direction: row;
+    align-items: center;
 `;
 
 const ListGroups = styled.div`
-`;
-
-const CustomTable = styled.table`
+    width: auto;
+    padding: 40px;
 `;
 
 export default IndependentGroups;
