@@ -69,7 +69,6 @@ const NavLink = styled(Link)`
     display: flex;
     align-items: center;
     margin-bottom: 5px;
-    height: 25px;
 `;
 
 const SideBarSeparator = styled.hr`
