@@ -1,34 +1,37 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 import { Table } from "antd";
+import ExpandedTable from "../expandedTable/ExpandedTable";
 
 const NestedTableTrains = (props) => {
+  const renderData = props.data.map((obj, index) => ({
+    key: index,
+    ...obj,
+    train_date: obj.train_date?.split(" ")[0],
+    train_hour: obj.train_hour?.split(" ")[1],
+  }));
 
-    const renderData = props.data.map((obj, index) => ({ key: index, ...obj }))
-
-    const expandedRowRender = (group) => {
-        return <Table 
-        scroll={{ x: 1000 }}
-        columns={props.expandedColumns} 
-        dataSource={group} 
-        pagination={false} 
-        />;
-    };
-
-    return (
-        <NestedTable 
-        scroll={{ y: 480 }}
-        columns={props.columns} 
-        expandable={{
-            expandedRowRender: train => expandedRowRender(train.train_groups),
-        }} 
-        dataSource={renderData}
-        />
-    );
+  return (
+    <NestedTable
+      bordered
+      scroll={{ y: 920 }} // mac : 420
+      columns={props.columns}
+      expandable={{
+        expandedRowRender: (train) => (
+          <ExpandedTable
+            groups={train.train_groups}
+            expandedColumns={props.expandedColumns}
+          />
+        ),
+      }}
+      pagination={{ pageSize: 20 }}
+      dataSource={renderData}
+    />
+  );
 };
 
 const NestedTable = styled(Table)`
-    margin: 0;
+  margin: 0;
 `;
 
 export default NestedTableTrains;
