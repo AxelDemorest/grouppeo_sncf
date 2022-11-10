@@ -17,7 +17,7 @@ const SideBar = () => {
                 <NavLink to="/"><IoHome className="sideBarIcon" /> Accueil</NavLink>
                 <NavLink to="/"><MdOutlineDashboard className="sideBarIcon" /> Tableau de bord</NavLink>
                 <NavLink to="/groupes-autonomes"><MdGroups className="sideBarIcon" /> Groupes autonomes</NavLink>
-                <NavLink to="/"><IoMegaphoneSharp className="sideBarIcon" /> Groupes pris en charges</NavLink>
+                <NavLink to="/groupes-pris-en-charge"><IoMegaphoneSharp className="sideBarIcon" /> Groupes pris en charges</NavLink>
                 <NavLink to="/"><FaChild className="sideBarIcon" /> Junior & co</NavLink>
                 <SideBarSeparator />
                 <NavLink to="/"><FaUserEdit className="sideBarIcon" /> Gestion des utilisateurs</NavLink>
@@ -34,7 +34,7 @@ const SideBarContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  border-right: 1px solid #d1d1d1;
+
 `;
 
 const Logo = styled.img`
@@ -54,7 +54,7 @@ const NavItems = styled.ul`
 const NavLink = styled(Link)`
     &:hover {
         background-color: #e6c3cf;
-        color: #DC7497;
+        color: #a63f62;
     }
     transition: color 0.2s, background-color 0.2s;
     cursor: pointer;
@@ -63,8 +63,8 @@ const NavLink = styled(Link)`
     width: 92%;
     padding: 13px 0;
     text-align: center;
-    color: #9CA6B5;
-    font-weight: 600;
+    color: #8d8d8d;
+    font-weight: 500;
     text-decoration: none;
     display: flex;
     align-items: center;
