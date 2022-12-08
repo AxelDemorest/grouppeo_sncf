@@ -20,7 +20,7 @@ const SideBar = () => {
                 <NavLink to="/groupes-pris-en-charge"><IoMegaphoneSharp className="sideBarIcon" /> Groupes pris en charges</NavLink>
                 <NavLink to="/"><FaChild className="sideBarIcon" /> Junior & co</NavLink>
                 <SideBarSeparator />
-                <NavLink to="/"><FaUserEdit className="sideBarIcon" /> Gestion des utilisateurs</NavLink>
+                <NavLink to="/gestion-des-utilisateurs"><FaUserEdit className="sideBarIcon" /> Gestion des utilisateurs</NavLink>
                 <NavLink to="/"><GiCaptainHatProfile className="sideBarIcon" /> Gestion des agents</NavLink>
             </NavItems>
         </SideBarContainer>
