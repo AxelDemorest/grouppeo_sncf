@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { userDTO } from '../models/user.dto';
@@ -32,6 +32,20 @@ export class UserService {
 
   async getUsers(): Promise<User[]> {
     return this.usersRepository.find();
+  }
+
+  async updateUser(user_id: number, data: userDTO): Promise<User> {
+    const user = await this.usersRepository.findOneBy({ user_id: user_id });
+
+    if (!user) {
+      throw new NotFoundException(`Group with ID=${user_id} not found`);
+    }
+
+    delete data.user_id;
+
+    await this.usersRepository.update(user_id, data);
+
+    return data;
   }
 
   async removeUser(id: string): Promise<any> {

@@ -5,10 +5,8 @@ import { Train } from './models/train.entity';
 import { TrainService } from './service/train.service';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Train])],
-    providers: [TrainService],
-    controllers: [TrainController],
+  imports: [TypeOrmModule.forFeature([Train])],
+  providers: [TrainService],
+  controllers: [TrainController],
 })
-export class TrainModule {
-    
-}
+export class TrainModule {}

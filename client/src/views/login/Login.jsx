@@ -42,7 +42,7 @@ const Login = () => {
             const user = await axios.post('http://localhost:3001/auth/login', values);
             dispatch({ type: "LOGIN_SUCCESS", payload: jwt_decode(user.data.access_token) });
             navigate(state?.path || "/", { replace: true });
-        } catch(err) {
+        } catch (err) {
             setIsError(true)
             dispatch({ type: "LOGIN_FAILURE", payload: err.response.data });
         }

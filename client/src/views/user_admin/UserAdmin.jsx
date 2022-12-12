@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import Container from '../../components/container/Container';
+import Container from "../../components/container/Container";
 import { Button, Table, message, Popconfirm } from "antd";
 import styled from "styled-components";
 
-import { HeaderGroupContainer, HeaderTitle } from '../../style/groupsStyles.js';
-import UserModal from '../../components/userModal/UserModal';
-import UserEditModal from '../../components/userEditModal/UserEditModal';
+import { HeaderGroupContainer, HeaderTitle } from "../../style/groupsStyles.js";
+import UserModal from "../../components/userModal/UserModal";
+import UserEditModal from "../../components/userEditModal/UserEditModal";
 
 const UserAdmin = () => {
     const [confirmLoading, setConfirmLoading] = useState(false);
@@ -16,32 +16,45 @@ const UserAdmin = () => {
     const [editModalOpen, setEditModalOpen] = useState(false);
 
     const handleDelete = async (item) => {
-        await axios.delete(`http://localhost:3001/user/${item.user_id}`)
+        await axios.delete(`http://localhost:3001/user/${item.user_id}`);
         setData((current) =>
             current.filter((currentItem) => currentItem.user_id !== item.user_id)
         );
     };
 
     const onCreate = async (values, form) => {
-        const { data } = await axios.post("http://localhost:3001/user/user", values);
+        const { data } = await axios.post(
+            "http://localhost:3001/user/user",
+            values
+        );
         setConfirmLoading(true);
         setTimeout(() => {
             form.resetFields();
             setOpen(false);
             setConfirmLoading(false);
-            setData(current => [...current, { key: data.post.user_id, ...data.post }]);
-            message.success('L\'utilisateur a bien été crée');
+            setData((current) => [
+                ...current,
+                { key: data.post.user_id, ...data.post },
+            ]);
+            message.success("L'utilisateur a bien été crée");
         }, 2000);
     };
 
     const onEdit = async (values, formEdit) => {
+        await axios.patch(`http://localhost:3001/user/${values.user_id}`, values);
         setConfirmLoading(true);
+        const newState = data.map((obj) => {
+            if (obj.user_id === values.user_id) {
+                return { ...values };
+            }
+
+            return obj;
+        });
+        setData(newState);
         setTimeout(() => {
-            formEdit.resetFields();
             setEditModalOpen(false);
             setConfirmLoading(false);
-            //setData(current => [...current, { key: data.post.user_id, ...data.post }]);
-            message.success('L\'utilisateur a bien été modifié');
+            message.success("L'utilisateur a bien été modifié");
         }, 2000);
     };
 
@@ -56,26 +69,27 @@ const UserAdmin = () => {
 
     const columns = [
         {
-            title: 'CP',
-            dataIndex: 'user_cp',
-            key: 'user_cp',
+            title: "CP",
+            dataIndex: "user_cp",
+            key: "user_cp",
         },
         {
-            title: 'Email',
-            dataIndex: 'user_mail',
-            key: 'user_mail',
+            title: "Email",
+            dataIndex: "user_mail",
+            key: "user_mail",
         },
         {
-            title: 'Rôle',
-            dataIndex: 'user_type',
-            key: 'user_type',
+            title: "Rôle",
+            dataIndex: "user_type",
+            key: "user_type",
         },
         {
-            title: 'Actions',
-            key: 'user_actions',
+            title: "Actions",
+            key: "user_actions",
             render: (_, record) => (
                 <>
-                    <Button style={{ marginRight: '20px' }}
+                    <Button
+                        style={{ marginRight: "20px" }}
                         onClick={() => {
                             setEditModalOpen(true);
                             setRecord(record);
@@ -90,9 +104,7 @@ const UserAdmin = () => {
                         okText="Yes"
                         cancelText="No"
                     >
-                        <Button>
-                            Supprimer
-                        </Button>
+                        <Button>Supprimer</Button>
                     </Popconfirm>
                 </>
             ),
@@ -107,13 +119,24 @@ const UserAdmin = () => {
                     <p>
                         Liste de tous les utilisateurs ayant des droits sur l'application.
                     </p>
+                    <Button
+                        style={{ marginBottom: "10px" }}
+                        onClick={() => {
+                            setOpen((c) => !c);
+                        }}
+                    >
+                        Ajouter un utilisateur
+                    </Button>
                 </HeaderGroupContainer>
                 <CustomTable>
-                    <Button style={{ marginBottom: '10px' }} onClick={() => { setOpen((c) => !c) }}>Ajouter un utilisateur</Button>
-                    <Table columns={columns} dataSource={data.map((obj) => ({
-                        key: obj.user_id,
-                        ...obj
-                    }))} />
+                    <Table
+                        bordered
+                        columns={columns}
+                        dataSource={data.map((obj) => ({
+                            key: obj.user_id,
+                            ...obj,
+                        }))}
+                    />
                 </CustomTable>
             </div>
             <UserModal
@@ -139,8 +162,13 @@ const UserAdmin = () => {
 };
 
 const CustomTable = styled.div`
-  width: 60%;
-  margin: 30px 0 0 40px;
+  width: 90%;
+  margin: 25px 40px 40px 40px;
+  padding: 30px 30px 15px 30px;
+  height: 70vh;
+  border-radius: 10px;
+  background-color: #fff;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
 `;
 
 export default UserAdmin;
