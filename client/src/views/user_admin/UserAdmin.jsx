@@ -5,8 +5,8 @@ import { Button, Table, message, Popconfirm } from "antd";
 import styled from "styled-components";
 
 import { HeaderGroupContainer, HeaderTitle } from "../../style/groupsStyles.js";
-import UserModal from "../../components/userModal/UserModal";
-import UserEditModal from "../../components/userEditModal/UserEditModal";
+import UserModal from "../../components/modal/userModal/UserModal";
+import UserEditModal from "../../components/modal/userEditModal/UserEditModal";
 
 const UserAdmin = () => {
     const [confirmLoading, setConfirmLoading] = useState(false);

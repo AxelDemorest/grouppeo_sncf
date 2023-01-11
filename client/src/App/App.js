@@ -6,6 +6,7 @@ import RequireAuth from '../components/requireAuth/RequireAuth.jsx';
 import './App.less';
 import SupportedGroup from '../views/supportedGroup/SupportedGroup.jsx';
 import UserAdmin from '../views/user_admin/UserAdmin.jsx';
+import AgentAdmin from '../views/agent_admin/AgentAdmin.jsx';
 
 function App() {
   return (
@@ -31,6 +32,11 @@ function App() {
             <Route exact path="/gestion-des-utilisateurs" element={
               <RequireAuth>
                 <UserAdmin />
+              </RequireAuth>
+            }/>
+            <Route exact path="/gestion-des-agents" element={
+              <RequireAuth>
+                <AgentAdmin />
               </RequireAuth>
             }/>
           </Routes>

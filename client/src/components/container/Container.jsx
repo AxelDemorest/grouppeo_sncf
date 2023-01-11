@@ -19,9 +19,9 @@ const Wrapper = styled.div`
 `;
 
 const DashboardContainer = styled.div`
-    height: 100vh;
     width: calc(100vw - 270px);
     background-color: #F9FAFE;
+    min-height: 100vh;
 `;
 
 export default Container;

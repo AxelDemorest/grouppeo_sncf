@@ -20,6 +20,7 @@ const UserModal = ({
     onCreate,
     onCancel,
     confirmLoading,
+    agentInput = true
 }) => {
     const [form] = Form.useForm();
 
@@ -62,6 +63,7 @@ const UserModal = ({
                     form={form}
                     layout="vertical"
                     name="edit_group_form"
+                    initialValues={ !agentInput ? { user_type: "Agent" } : {}}
                 >
                     <FormItem name="user_cp" label="CP">
                         <Input />
@@ -76,7 +78,7 @@ const UserModal = ({
                         <Input />
                     </FormItem>
                     <FormItem name="user_type" label="Rôle">
-                        <Select>
+                        <Select disabled={agentInput ? false : true}>
                             <Select.Option value="Administrateur">Administrateur</Select.Option>
                             <Select.Option value="UO service">UO Service</Select.Option>
                             <Select.Option value="Agent">Agent</Select.Option>

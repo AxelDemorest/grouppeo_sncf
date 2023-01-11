@@ -3,7 +3,7 @@ import axios from "axios";
 import { Button } from "antd";
 import styled from "styled-components";
 import NestedTableTrains from "../../components/nestedTableTrain/NestedTableTrains";
-import GroupEditForm from "../../components/groupEditForm/GroupEditForm";
+import GroupEditForm from "../../components/modal/groupEditForm/GroupEditForm";
 import Container from "../../components/container/Container";
 
 // Import component style
@@ -174,9 +174,9 @@ const SupportedGroup = () => {
 
 const ListGroups = styled.div`
   width: auto;
+  height: auto;
   margin: 25px 40px 40px 40px;
   padding: 30px 30px 15px 30px;
-  height: 85vh;
   border-radius: 10px;
   background-color: #fff;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;

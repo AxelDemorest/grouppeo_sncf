@@ -5,15 +5,15 @@ import { Button } from "antd";
 import axios from "axios";
 
 import NestedTableTrains from "../../components/nestedTableTrain/NestedTableTrains";
-import GroupEditForm from "../../components/groupEditForm/GroupEditForm";
+import GroupEditForm from "../../components/modal/groupEditForm/GroupEditForm";
 import Container from "../../components/container/Container";
-
-import { BiImport } from "react-icons/bi";
 
 // Component style
 import { HeaderGroupContainer, HeaderTitle } from '../../style/groupsStyles.js';
+import ImportGroups from "../../components/modal/importGroups/importGroups";
+import UpdateGroups from "../../components/modal/updateGroups/UpdateGroups";
 
-const EXTENSIONS = ["xlsx", "csv", "xls"];
+const EXTENSIONS = ["xlsx", "xls"];
 
 const IndependentGroups = () => {
   const [confirmLoading, setConfirmLoading] = useState(false);
@@ -21,7 +21,13 @@ const IndependentGroups = () => {
   const [renderData, setRenderData] = useState([]);
   const [record, setRecord] = useState({});
   const [open, setOpen] = useState(false);
-  
+
+  const [openImportModal, setOpenImportModal] = useState(false);
+  const [confirmLoadingImport, setConfirmLoadingImport] = useState(false);
+
+  const [openUpdateModal, setOpenUpdateModal] = useState(false);
+  const [confirmLoadingUpdate, setConfirmLoadingUpdate] = useState(false);
+
   useEffect(() => {
     const getTrains = async () => {
       const { data } = await axios.get("http://localhost:3001/train/train");
@@ -91,8 +97,8 @@ const IndependentGroups = () => {
     return rows;
   };
 
-  const importExcel = async (e) => {
-    const file = e.target.files[0];
+  const importExcel = async (values, isImport) => {
+    const file = values.trains.file;
 
     const reader = new FileReader();
     reader.onload = async (event) => {
@@ -115,7 +121,16 @@ const IndependentGroups = () => {
 
       fileData.splice(0, 1);
       const convertData = convertToJson(headers, fileData);
-      await axios.post("http://localhost:3001/train/train", convertData);
+      const period = values.period;
+      const body = {
+        trains: convertData,
+        period: period,
+      };
+      if (isImport) {
+        await axios.post("http://localhost:3001/train/train", body);
+      } else {
+        await axios.patch("http://localhost:3001/train/train", body);
+      }
       setIsDataImport(true);
     };
 
@@ -135,6 +150,26 @@ const IndependentGroups = () => {
       setOpen(false);
       setRecord({});
       setConfirmLoading(false);
+    }, 2000);
+  };
+
+  const onImport = async (values, form) => {
+    setConfirmLoadingImport(true);
+    importExcel(values, true);
+    setTimeout(() => {
+      form.resetFields();
+      setOpenImportModal(false);
+      setConfirmLoadingImport(false);
+    }, 2000);
+  };
+
+  const onUpdate = async (values, form) => {
+    setConfirmLoadingUpdate(true);
+    importExcel(values, false);
+    setTimeout(() => {
+      form.resetFields();
+      setOpenUpdateModal(false);
+      setConfirmLoadingUpdate(false);
     }, 2000);
   };
 
@@ -255,11 +290,14 @@ const IndependentGroups = () => {
               placeholder="Rechercher un n° de train"
               style={{ width: 200 }}
             />
-            <FileInputLabel htmlFor="inputFile">
-              <BiImport style={{ marginRight: "5px", fontSize: "18px" }} />
-              Importer les groupes de saison
-              <FileInput type="file" id="inputFile" onChange={importExcel} />
-            </FileInputLabel>
+            <div>
+              <Button onClick={() => setOpenUpdateModal((c) => !c)} style={{ marginRight: '20px' }}>
+                Mettre à jour les groupes de saison
+              </Button>
+             <Button onClick={() => setOpenImportModal((c) => !c)}>
+                Importer les groupes de saison
+              </Button>
+            </div>
           </HeaderTable>
           <NestedTableTrains
             columns={trainColumns}
@@ -277,6 +315,22 @@ const IndependentGroups = () => {
         }}
         confirmLoading={confirmLoading}
         record={record}
+      />
+     <ImportGroups
+        open={openImportModal}
+        onCreate={onImport}
+        onCancel={() => {
+          setOpenImportModal((c) => !c);
+        }}
+        confirmLoading={confirmLoadingImport}
+      />
+      <UpdateGroups
+        open={openUpdateModal}
+        onCreate={onUpdate}
+        onCancel={() => {
+          setOpenUpdateModal((c) => !c);
+        }}
+        confirmLoading={confirmLoadingUpdate}
       />
     </Container>
   );
@@ -301,31 +355,11 @@ const SearchInput = styled.input`
     rgba(0, 0, 0, 0.05) 0px 0px 0px 1px;
 `;
 
-const FileInput = styled.input`
-  display: none;
-`;
-
-const FileInputLabel = styled.label`
-  &:hover {
-    background-color: #fbe2eb;
-  }
-  border-radius: 5px;
-  cursor: pointer;
-  font-weight: bold;
-  background-color: #ffeff5;
-  color: #fd95b7;
-  padding: 10px;
-  display: flex;
-  font-size: 15px;
-  flex-direction: row;
-  align-items: center;
-`;
-
 const ListGroups = styled.div`
   width: auto;
+  height: auto;
   margin: 25px 40px 40px 40px;
   padding: 30px 30px 15px 30px;
-  height: 85vh;
   border-radius: 10px;
   background-color: #fff;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;

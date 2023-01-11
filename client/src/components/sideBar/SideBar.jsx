@@ -12,29 +12,35 @@ import './sideBar.css';
 const SideBar = () => {
     return (
         <SideBarContainer>
-            <Logo src={logo} alt="Logo" width='40%'></Logo>
-            <NavItems className='navItems'>
-                <NavLink to="/"><IoHome className="sideBarIcon" /> Accueil</NavLink>
-                <NavLink to="/"><MdOutlineDashboard className="sideBarIcon" /> Tableau de bord</NavLink>
-                <NavLink to="/groupes-autonomes"><MdGroups className="sideBarIcon" /> Groupes autonomes</NavLink>
-                <NavLink to="/groupes-pris-en-charge"><IoMegaphoneSharp className="sideBarIcon" /> Groupes pris en charges</NavLink>
-                <NavLink to="/"><FaChild className="sideBarIcon" /> Junior & co</NavLink>
-                <SideBarSeparator />
-                <NavLink to="/gestion-des-utilisateurs"><FaUserEdit className="sideBarIcon" /> Gestion des utilisateurs</NavLink>
-                <NavLink to="/"><GiCaptainHatProfile className="sideBarIcon" /> Gestion des agents</NavLink>
-            </NavItems>
+            <StickyContainer>
+                <Logo src={logo} alt="Logo" width='40%'></Logo>
+                <NavItems className='navItems'>
+                    <NavLink to="/"><IoHome className="sideBarIcon" /> Accueil</NavLink>
+                    <NavLink to="/"><MdOutlineDashboard className="sideBarIcon" /> Tableau de bord</NavLink>
+                    <NavLink to="/groupes-autonomes"><MdGroups className="sideBarIcon" /> Groupes autonomes</NavLink>
+                    <NavLink to="/groupes-pris-en-charge"><IoMegaphoneSharp className="sideBarIcon" /> Groupes pris en charges</NavLink>
+                    <NavLink to="/"><FaChild className="sideBarIcon" /> Junior & co</NavLink>
+                    <SideBarSeparator />
+                    <NavLink to="/gestion-des-utilisateurs"><FaUserEdit className="sideBarIcon" /> Gestion des utilisateurs</NavLink>
+                    <NavLink to="/gestion-des-agents"><GiCaptainHatProfile className="sideBarIcon" /> Gestion des agents</NavLink>
+                </NavItems>
+            </StickyContainer>
         </SideBarContainer>
     );
 };
 
 const SideBarContainer = styled.div`
   width: 270px;
-  height: 100vh;
   background-color: #FFFFFF;
+  position: relative;
+`;
+
+const StickyContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-
+  position: sticky;
+  top: 0px;
 `;
 
 const Logo = styled.img`

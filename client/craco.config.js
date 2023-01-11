@@ -6,7 +6,7 @@ module.exports = {
       plugin: CracoAntDesignPlugin,
       options: {
         customizeTheme: {
-            '@font-family': 'Avenir, serif',
+          '@font-family': 'Avenir, serif',
         },
       },
     },

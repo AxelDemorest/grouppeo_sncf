@@ -2,19 +2,6 @@ import { Form, Input, Modal, Select } from "antd";
 import React, { useEffect, useRef } from "react";
 import styled from "styled-components";
 
-const useResetFormOnCloseModal = ({ form, open }) => {
-  const prevOpenRef = useRef();
-  useEffect(() => {
-    prevOpenRef.current = open;
-  }, [open]);
-  const prevOpen = prevOpenRef.current;
-  useEffect(() => {
-    if (!open && prevOpen) {
-      form.resetFields();
-    }
-  }, [form, prevOpen, open]);
-};
-
 const GroupEditForm = ({
   open,
   onCreate,
@@ -23,13 +10,6 @@ const GroupEditForm = ({
   record,
 }) => {
   const [form] = Form.useForm();
-
-  useResetFormOnCloseModal({
-    form,
-    open,
-  });
-
-  useEffect(() => form.resetFields(), [record, form]);
 
   const handleOk = () => {
     form
@@ -48,6 +28,7 @@ const GroupEditForm = ({
         <Modal
           title="Éditer le groupe"
           open={open}
+          destroyOnClose
           onOk={handleOk}
           onCancel={() => {
             form.resetFields();
@@ -57,77 +38,79 @@ const GroupEditForm = ({
           cancelText="Retour"
           confirmLoading={confirmLoading}
         >
-          <FormModal
+          <Form preserve={false}
             form={form}
             layout="vertical"
             name="edit_group_form"
-            initialValues={record}
+            style={{ display: "flex", flexWrap: "wrap" }}
           >
-            <FormItem hidden={true} name="group_id" label="Destination">
+            <FormItem hidden={true} name="group_id" initialValue={record.group_id} label="Destination">
               <Input />
             </FormItem>
-            <FormItem name="group_destination" label="Destination">
+            <FormItem name="group_destination" initialValue={record.group_destination}  label="Destination">
               <Input disabled={true} />
             </FormItem>
-            <FormItem name="group_name" label="Nom du groupe">
+            <FormItem name="group_name" initialValue={record.group_name} label="Nom du groupe">
               <Input disabled={true} />
             </FormItem>
             <FormItem name="group_total_travellers" label="Total voyageurs">
               <Input disabled={true} />
             </FormItem>
-            <FormItem name="group_car_number" label="N° Voiture">
+            <FormItem name="group_car_number" initialValue={record.group_car_number} label="N° Voiture">
               <Input disabled={true} />
             </FormItem>
-            <FormItem name="group_type" label="Nature du groupe">
+            <FormItem name="group_type" initialValue={record.group_type} label="Nature du groupe">
               <Select>
                 <Select.Option value="true">Autonome</Select.Option>
                 <Select.Option value="false">Enfant</Select.Option>
                 <Select.Option value="false">Handicapé</Select.Option>
               </Select>
             </FormItem>
-            <FormItem name="group_prestation" label="Prestation">
+            <FormItem name="group_prestation" initialValue={record.group_prestation} label="Prestation">
               <Select>
                 <Select.Option value="true">Oui</Select.Option>
                 <Select.Option value="false">Non</Select.Option>
               </Select>
             </FormItem>
-            <FormItem name="group_meeting_point" label="Point RV">
+            <FormItem name="group_meeting_point" initialValue={record.group_meeting_point} label="Point RV">
               <Input />
             </FormItem>
-            <FormItem name="group_meeting_time" label="Heure RV">
+            <FormItem name="group_meeting_time" initialValue={record.group_meeting_time} label="Heure RV">
               <Input />
             </FormItem>
             <FormItem
               name="group_responsable_departure_day"
               label="Responsable jour du départ"
+              initialValue={record.group_responsable_departure_day}
             >
               <Input />
             </FormItem>
             <FormItem
               name="group_responsable_phone_departure_day"
               label="Tel. responsable jour du départ"
+              initialValue={record.group_responsable_phone_departure_day}
             >
               <Input />
             </FormItem>
-            <FormItem name="group_bus_number" label="Bus (nbre)">
+            <FormItem name="group_bus_number" label="Bus (nbre)" initialValue={record.group_bus_number}>
               <Input />
             </FormItem>
-            <FormItem name="group_responsable" label="Responsable">
+            <FormItem name="group_responsable" label="Responsable" initialValue={record.group_responsable}>
               <Input />
             </FormItem>
-            <FormItem name="group_responsable_phone" label="Tel. responsable">
+            <FormItem name="group_responsable_phone" label="Tel. responsable" initialValue={record.group_responsable_phone}>
               <Input />
             </FormItem>
-            <FormItem name="group_seller_name" label="Nom vendeur">
+            <FormItem name="group_seller_name" label="Nom vendeur" initialValue={record.group_seller_name}>
               <Input />
             </FormItem>
-            <FormItem name="group_seller_phone" label="Tel. vendeur">
+            <FormItem name="group_seller_phone" label="Tel. vendeur" initialValue={record.group_seller_phone}>
               <Input />
             </FormItem>
-            <FormItem name="group_dpx" label="DPX (1 par train sensible)">
+            <FormItem name="group_dpx" label="DPX (1 par train sensible)" initialValue={record.group_dpx}>
               <Input />
             </FormItem>
-          </FormModal>
+          </Form>
         </Modal>
       )}
     </>

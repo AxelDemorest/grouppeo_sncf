@@ -14,7 +14,7 @@ const NestedTableTrains = (props) => {
   return (
     <NestedTable
       bordered
-      scroll={{ y: 920 }} // mac : 420
+      scroll={{ y: 920 }} // mac : 500 // pc : 920
       columns={props.columns}
       expandable={{
         expandedRowRender: (train) => (
