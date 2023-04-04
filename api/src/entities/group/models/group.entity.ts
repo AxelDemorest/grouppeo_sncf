@@ -1,5 +1,17 @@
 import { Train } from 'src/entities/train/models/train.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Planning } from '../../planning/models/planning.entity';
+import { User } from '../../user/models/user.entity';
+import { Status } from '../../status/models/status.entity';
+import { GroupStatus } from '../../group-status/models/group-status.entity';
 
 export enum GroupType {
   AUT = 'autonome',
@@ -42,13 +54,10 @@ export class Group {
   group_car_number?: string;
 
   @Column({ default: null })
-  group_meeting_date_time?: string;
+  group_meeting_time?: string;
 
   @Column({ default: null })
   group_meeting_point?: string;
-
-  @Column({ default: null })
-  group_agent?: string;
 
   @Column({ default: false })
   group_prestation?: boolean;
@@ -59,32 +68,14 @@ export class Group {
   @Column({ default: null })
   group_responsable_phone_departure_day?: string;
 
-  @Column({ default: null })
-  group_responsable?: string;
-
-  @Column({ default: null })
-  group_responsable_phone?: string;
-
-  @Column({ default: null })
-  group_seller_name?: string;
-
-  @Column({ default: null })
-  group_seller_phone?: string;
-
-  @Column({ default: null })
-  group_dpx?: string;
-
   @Column({ type: 'enum', enum: GroupReservationState, default: null })
   group_reservation_state?: GroupReservationState;
 
-  @Column({ type: 'enum', enum: GroupOperationState, default: null })
-  group_operation_state?: GroupOperationState;
+  @OneToMany(() => GroupStatus, (groupStatus) => groupStatus.group)
+  groupStatus?: GroupStatus[];
 
   @Column({ default: null })
-  group_comment?: string;
-
-  @Column({ default: null })
-  group_bus_number?: string;
+  group_mail?: string;
 
   @Column({ default: null })
   group_is_supported?: boolean;
@@ -95,4 +86,10 @@ export class Group {
     onUpdate: 'CASCADE',
   })
   group_train?: Train;
+
+  @ManyToOne(() => Planning, (planning) => planning.planning_groups, {
+    onDelete: 'SET NULL',
+    nullable: true,
+  })
+  group_planning?: Planning;
 }

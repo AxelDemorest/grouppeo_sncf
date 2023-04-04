@@ -117,12 +117,6 @@ const GroupEditForm = ({
   );
 };
 
-const FormModal = styled(Form)`
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-`;
-
 const FormItem = styled(Form.Item)`
   margin-right: 20px !important;
   width: 45%;

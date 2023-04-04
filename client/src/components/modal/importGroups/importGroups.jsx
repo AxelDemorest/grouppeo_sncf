@@ -59,8 +59,6 @@ const ImportGroups = ({
                     <FormItem name="trains" label="Fichier des trains" valuePropName="fileList"
                         getValueFromEvent={normFile}>
                         <Upload accept=".xls, .xlsx" beforeUpload={file => {
-                            console.log(file);
-
                             return false;
                         }}>
                             <Button icon={<UploadOutlined />}>Click to upload</Button>

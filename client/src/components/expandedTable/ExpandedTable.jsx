@@ -12,8 +12,7 @@ const ExpandedTable = ({
 
     return <Table
     scroll={{ x: 1000 }}
-    bordered
-    columns={expandedColumns} 
+    columns={expandedColumns}
     dataSource={renderGroupData} 
     pagination={false}
     />;

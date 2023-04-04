@@ -16,7 +16,7 @@ const UserAdmin = () => {
     const [editModalOpen, setEditModalOpen] = useState(false);
 
     const handleDelete = async (item) => {
-        await axios.delete(`http://localhost:3001/user/${item.user_id}`);
+        await axios.delete(`${process.env.REACT_APP_API_HOST}/user/${item.user_id}`);
         setData((current) =>
             current.filter((currentItem) => currentItem.user_id !== item.user_id)
         );
@@ -24,7 +24,7 @@ const UserAdmin = () => {
 
     const onCreate = async (values, form) => {
         const { data } = await axios.post(
-            "http://localhost:3001/user/user",
+            `${process.env.REACT_APP_API_HOST}/user/user`,
             values
         );
         setConfirmLoading(true);
@@ -41,7 +41,7 @@ const UserAdmin = () => {
     };
 
     const onEdit = async (values, formEdit) => {
-        await axios.patch(`http://localhost:3001/user/${values.user_id}`, values);
+        await axios.patch(`${process.env.REACT_APP_API_HOST}/user/${values.user_id}`, values);
         setConfirmLoading(true);
         const newState = data.map((obj) => {
             if (obj.user_id === values.user_id) {
@@ -60,7 +60,7 @@ const UserAdmin = () => {
 
     useEffect(() => {
         const getUsers = async () => {
-            const { data } = await axios.get("http://localhost:3001/user/user");
+            const { data } = await axios.get(`${process.env.REACT_APP_API_HOST}/user/user`);
             setData(data);
         };
 
@@ -112,7 +112,7 @@ const UserAdmin = () => {
     ];
 
     return (
-        <Container>
+        <Container title={'Gestion des utilisateurs'}>
             <div>
                 <HeaderGroupContainer>
                     <HeaderTitle>Gestion des utilisateurs</HeaderTitle>
@@ -130,6 +130,7 @@ const UserAdmin = () => {
                 </HeaderGroupContainer>
                 <CustomTable>
                     <Table
+                        scroll={{ y: 920, x: 920 }}
                         bordered
                         columns={columns}
                         dataSource={data.map((obj) => ({
@@ -162,13 +163,17 @@ const UserAdmin = () => {
 };
 
 const CustomTable = styled.div`
-  width: 90%;
+  height: auto;
+  width: auto;
   margin: 25px 40px 40px 40px;
   padding: 30px 30px 15px 30px;
-  height: 70vh;
   border-radius: 10px;
   background-color: #fff;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
+  @media (max-width: 992px) {
+    width: 200%;
+    margin: 0;
+  }
 `;
 
 export default UserAdmin;

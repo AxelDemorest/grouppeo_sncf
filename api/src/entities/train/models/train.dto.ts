@@ -6,6 +6,7 @@ export class TrainDTO {
   readonly train_date: string;
   readonly train_hour: number;
   readonly train_track?: string;
+  readonly train_period: string;
   readonly train_groups?: Group[];
 }
 
@@ -14,6 +15,7 @@ export class createTrainDTO {
   readonly train_hour: number;
   train_groups: Group[];
   readonly train_date: string;
+  readonly train_period: string;
   readonly group_name: string;
   readonly group_type: GroupType;
   readonly group_total_travellers: string;
@@ -30,6 +32,12 @@ export class createTrainDTO {
   readonly group_seller_phone?: string;
   readonly group_dpx?: string;
   readonly group_comment?: string;
+  readonly group_mail?: string;
   readonly group_bus_number?: string;
   readonly group_is_supported?: boolean;
+}
+
+export class formTrainDTO {
+  trains: createTrainDTO[];
+  period: string;
 }

@@ -1,6 +1,6 @@
 import React from "react";
 import axios from "axios";
-import { Button } from "antd";
+import {Button, Input} from "antd";
 import styled from "styled-components";
 import NestedTableTrains from "../../components/nestedTableTrain/NestedTableTrains";
 import GroupEditForm from "../../components/modal/groupEditForm/GroupEditForm";
@@ -8,6 +8,7 @@ import Container from "../../components/container/Container";
 
 // Import component style
 import { HeaderGroupContainer, HeaderTitle } from '../../style/groupsStyles.js';
+import {SearchOutlined} from "@ant-design/icons";
 
 const SupportedGroup = () => {
   const [TrainData, setTrainData] = React.useState([]);
@@ -19,7 +20,7 @@ const SupportedGroup = () => {
   React.useEffect(() => {
     const getTrainsWithSupportedGroups = async () => {
       const { data } = await axios.get(
-        "http://localhost:3001/train/train_groups_supported"
+        `${process.env.REACT_APP_API_HOST}/train/train_groups_supported`,
       );
       setTrainData(data);
     };
@@ -28,7 +29,7 @@ const SupportedGroup = () => {
   }, [isDataImport]);
 
   const onCreate = async (values, form) => {
-    await axios.patch(`http://localhost:3001/group/${values.group_id}`, values);
+    await axios.patch(`${process.env.REACT_APP_API_HOST}/group/${values.group_id}`, values);
     setIsDataImport((c) => !c);
     setConfirmLoading(true);
     setTimeout(() => {
@@ -50,19 +51,32 @@ const SupportedGroup = () => {
     { title: "Heure", dataIndex: "train_hour", key: "train_hour" },
   ];
 
+  const switchGroupType = async (record) => {
+    await axios.patch(`${process.env.REACT_APP_API_HOST}/group/${record.group_id}/type/switch`);
+    setIsDataImport(!isDataImport)
+  }
+
   const expandedColumns = [
     {
       title: "Actions",
       key: "group_actions",
       render: (text, record) => (
-        <Button
-          onClick={() => {
-            setOpen((c) => !c);
-            setRecord(record);
-          }}
-        >
-          Éditer
-        </Button>
+          <>
+            <Button
+                onClick={() => {
+                  setOpen((c) => !c);
+                  setRecord(record);
+                }}
+            >
+              Éditer
+            </Button>
+            <Button
+                style={{ marginLeft: '10px' }}
+                onClick={() => switchGroupType(record)}
+            >
+              Basculer en groupe autonome
+            </Button>
+          </>
       ),
     },
     {
@@ -75,6 +89,7 @@ const SupportedGroup = () => {
       title: "Total voyageurs",
       dataIndex: "group_total_travellers",
       key: "group_total_travellers",
+      render: (text) => <p>{text} voyageurs</p>
     },
     {
       title: "N° Voiture",
@@ -86,6 +101,7 @@ const SupportedGroup = () => {
       title: "Prestation",
       dataIndex: "group_prestation",
       key: "group_prestation",
+      render: (text) => text ? 'BAGTM' : 'NON'
     },
     {
       title: "Point RV",
@@ -108,49 +124,21 @@ const SupportedGroup = () => {
       key: "group_responsable_phone_departure_day",
     },
     {
-      title: "Bus (nbre)",
-      dataIndex: "group_bus_number",
-      key: "group_bus_number",
-    },
-    {
-      title: "Responsable",
-      dataIndex: "group_responsable",
-      key: "group_responsable",
-    },
-    {
-      title: "Tel. responsable",
-      dataIndex: "group_responsable_phone",
-      key: "group_responsable_phone",
-    },
-    {
-      title: "Nom vendeur",
-      dataIndex: "group_seller_name",
-      key: "group_seller_name",
-    },
-    {
-      title: "Tel. vendeur",
-      dataIndex: "group_seller_phone",
-      key: "group_seller_phone",
-    },
-    {
       title: "DPX (1 par train sensible)",
       dataIndex: "group_dpx",
       key: "group_dpx",
     },
-    { title: "Commentaires", dataIndex: "group_comment", key: "group_comment" },
   ];
 
   return (
-    <Container>
+    <Container title={'Groupes pris en charge'}>
       <div>
-        <HeaderGroupContainer>
-          <HeaderTitle>Suivi des groupes pris en charges</HeaderTitle>
-          <p>
-            Tableau de tous les trains pris en charges par des agents avec des
-            filtres applicables.
-          </p>
-        </HeaderGroupContainer>
         <ListGroups>
+          <HeaderTable>
+            <div style={{ display: 'flex', flexDirection: 'row', width: '80%' }}>
+              <Input style={{ marginRight: '20px', borderRadius: '6px', width: '40%', fontSize: '17px' }} placeholder="Rechercher un groupe" prefix={<SearchOutlined />} />
+            </div>
+          </HeaderTable>
           <NestedTableTrains
             columns={trainColumns}
             expandedColumns={expandedColumns}
@@ -172,14 +160,24 @@ const SupportedGroup = () => {
   );
 };
 
+
+const HeaderTable = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  width: 100%;
+`;
+
 const ListGroups = styled.div`
   width: auto;
   height: auto;
   margin: 25px 40px 40px 40px;
-  padding: 30px 30px 15px 30px;
-  border-radius: 10px;
-  background-color: #fff;
-  box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
+  @media (max-width: 992px) {
+    width: 200%;
+    margin: 0;
+  }
 `;
 
 export default SupportedGroup;

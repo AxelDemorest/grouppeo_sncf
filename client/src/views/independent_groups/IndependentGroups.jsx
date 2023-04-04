@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { utils, read } from "xlsx";
-import { Button } from "antd";
+import { Button, Select, Input } from "antd";
 import axios from "axios";
 
 import NestedTableTrains from "../../components/nestedTableTrain/NestedTableTrains";
@@ -12,6 +12,7 @@ import Container from "../../components/container/Container";
 import { HeaderGroupContainer, HeaderTitle } from '../../style/groupsStyles.js';
 import ImportGroups from "../../components/modal/importGroups/importGroups";
 import UpdateGroups from "../../components/modal/updateGroups/UpdateGroups";
+import {SearchOutlined} from "@ant-design/icons";
 
 const EXTENSIONS = ["xlsx", "xls"];
 
@@ -28,9 +29,11 @@ const IndependentGroups = () => {
   const [openUpdateModal, setOpenUpdateModal] = useState(false);
   const [confirmLoadingUpdate, setConfirmLoadingUpdate] = useState(false);
 
+  const [inputText, setInputText] = useState("");
+
   useEffect(() => {
     const getTrains = async () => {
-      const { data } = await axios.get("http://localhost:3001/train/train");
+      const { data } = await axios.get(`${process.env.REACT_APP_API_HOST}/train/train`);
       setRenderData(data);
     };
 
@@ -44,61 +47,59 @@ const IndependentGroups = () => {
   };
 
   const convertToJson = (headers, data) => {
-    const rows = [];
-
-    const headersTrainDatabase = {
-      "Dates ": "train_date",
-      "No de train": "train_number",
-      Heure: "train_hour",
-    };
-
     const headersDatabase = {
-      "Dates ": "group_meeting_date",
-      "No de train": "train_number",
-      Heure: "train_hour",
-      Destination: "group_destination",
-      "Nom groupe": "group_name",
-      "Nbre places": "group_total_travellers",
-      "N°\nVoiture": "group_car_number",
-      "Nature groupe": "group_type",
-      Prestation: "group_prestation",
-      "Point RV": "group_meeting_point",
-      "Heure RV": "group_meeting_time",
-      "Responsable  jour du départ": "group_responsable_departure_day",
-      "Tel \nresponsable": "group_responsable_phone_departure_day",
-      "Bus (nbre)": "group_bus_number",
-      Responsable: "group_responsable",
-      "Téléphone responsable": "group_responsable_phone",
-      "Nom vendeur": "group_seller_name",
-      "Tél vendeur": "group_seller_phone",
-      "DPX\n(1 par train sensible)": "group_dpx",
-      Commentaires: "group_comment",
+      "Dates": "train_date",
+      "No-de-train": "train_number",
+      "Heure": "train_hour",
+      "Destination": "group_destination",
+      "Nom-groupe": "group_name",
+      "Nbre-places": "group_total_travellers",
+      "N°\n-Voiture": "group_car_number",
+      "Nature-groupe": "group_type",
+      "Prestation": "group_prestation",
+      "Point-RV": "group_meeting_point",
+      "Heure-RV": "group_meeting_time",
+      "Responsable-jour-du-départ": "group_responsable_departure_day",
+      "Tel-\n-responsable": "group_responsable_phone_departure_day",
+      "MAIL-CLIENT": "group_mail",
     };
 
-    data.forEach((row) => {
-      let rowData = {};
-      let trainData = {};
-      if (row.length > 0) {
-        row.forEach((element, index) => {
-          switch (headers[index]) {
-            case "Dates ":
-              rowData[headersTrainDatabase[headers[index]]] = element;
-            case "No de train":
-            case "Heure":
-              trainData[headersTrainDatabase[headers[index]]] = element;
-            default:
-              rowData[headersDatabase[headers[index]]] =
-                typeof element === "string" ? element.trim() : element;
-          }
-        });
-        rows.push(rowData);
-      }
-    });
-    return rows;
+    return data
+        .filter(row => row.length > 0)
+        .map(row =>
+            row.reduce((rowData, element, index) => {
+              const headersFormat = headersDatabase[headers[index].trim().replace(new RegExp(' ', 'g'), '-')];
+
+              if (!headersFormat) return rowData;
+
+              if (headersFormat.trim() === "train_hour") {
+                element = element.split(' ')[1] || ''
+              } else if (headersFormat.trim() === "train_date") {
+                element = new Date(element).toLocaleDateString('fr-FR', {
+                  year: 'numeric',
+                  month: '2-digit',
+                  day: '2-digit'
+                }) || ''
+              } else if (headersFormat.trim() === "group_prestation") {
+                element = element === 'BAGTM';
+              }
+
+              return { ...rowData, [headersFormat]: headersFormat.trim() === "group_prestation" ? element : element.toString().trim() }
+            }, {})
+        );
+  };
+
+  const performAxiosCall = async (url, body, isImport) => {
+    if (isImport) {
+      await axios.post(url, body);
+    } else {
+      await axios.patch(url, body);
+    }
   };
 
   const importExcel = async (values, isImport) => {
-    const file = values.trains.file;
+    const file = values.trains[0].originFileObj;
+    if (!file) return;
 
     const reader = new FileReader();
     reader.onload = async (event) => {
@@ -115,34 +116,27 @@ const IndependentGroups = () => {
       const fileData = utils.sheet_to_json(workSheet, {
         header: 1,
         raw: false,
-        dateNF: "dd-mm-yyyy hh:mm",
+        dateNF: "yyyy-mm-dd hh:mm",
       });
-      const headers = fileData[0];
-
-      fileData.splice(0, 1);
-      const convertData = convertToJson(headers, fileData);
+      const [headers, ...data] = fileData;
+      const convertData = convertToJson(headers, data);
       const period = values.period;
       const body = {
         trains: convertData,
-        period: period,
+        period,
       };
-      if (isImport) {
-        await axios.post("http://localhost:3001/train/train", body);
-      } else {
-        await axios.patch("http://localhost:3001/train/train", body);
-      }
+
+      await performAxiosCall(`${process.env.REACT_APP_API_HOST}/train/`, body, isImport);
       setIsDataImport(true);
     };
 
-    if (file) {
-      if (getExtension(file)) {
-        reader.readAsBinaryString(file);
-      }
+    if (getExtension(file)) {
+      reader.readAsBinaryString(file);
     }
   };
 
   const onCreate = async (values, form) => {
-    await axios.patch(`http://localhost:3001/group/${values.group_id}`, values);
+    await axios.patch(`${process.env.REACT_APP_API_HOST}/group/${values.group_id}`, values);
     setIsDataImport((c) => !c);
     setConfirmLoading(true);
     setTimeout(() => {
@@ -155,7 +149,7 @@ const IndependentGroups = () => {
 
   const onImport = async (values, form) => {
     setConfirmLoadingImport(true);
-    importExcel(values, true);
+    await importExcel(values, true);
     setTimeout(() => {
       form.resetFields();
       setOpenImportModal(false);
@@ -165,13 +159,18 @@ const IndependentGroups = () => {
 
   const onUpdate = async (values, form) => {
     setConfirmLoadingUpdate(true);
-    importExcel(values, false);
+    await importExcel(values, false);
     setTimeout(() => {
       form.resetFields();
       setOpenUpdateModal(false);
       setConfirmLoadingUpdate(false);
     }, 2000);
   };
+
+  const switchGroupType = async (record) => {
+    await axios.patch(`${process.env.REACT_APP_API_HOST}/group/${record.group_id}/type/switch`);
+    setIsDataImport(!isDataImport)
+  }
 
   const trainColumns = [
     {
@@ -182,21 +181,34 @@ const IndependentGroups = () => {
     },
     { title: "Date", dataIndex: "train_date", key: "train_date", width: 400 },
     { title: "Heure", dataIndex: "train_hour", key: "train_hour" },
+    { title: "Période", dataIndex: "train_period", key: "train_period" },
   ];
 
   const expandedColumns = [
     {
       title: "Actions",
       key: "group_actions",
+      width: 330,
       render: (text, record) => (
-        <Button
-          onClick={() => {
-            setOpen((c) => !c);
-            setRecord(record);
-          }}
-        >
-          Éditer
-        </Button>
+          <>
+            <Button
+                style={{ marginRight: '10px' }}
+                onClick={() => {
+                  setOpen((c) => !c);
+                  setRecord(record);
+                }}
+            >
+              Éditer
+            </Button>
+            <Button
+                style={{ marginTop: '10px' }}
+                onClick={() => {
+                  switchGroupType(record);
+                }}
+            >
+              Basculer en groupe sensible
+            </Button>
+          </>
       ),
     },
     {
@@ -209,6 +221,7 @@ const IndependentGroups = () => {
       title: "Total voyageurs",
       dataIndex: "group_total_travellers",
       key: "group_total_travellers",
+      render: (text) => <p>{text} voyageurs</p>
     },
     {
       title: "N° Voiture",
@@ -220,6 +233,7 @@ const IndependentGroups = () => {
       title: "Prestation",
       dataIndex: "group_prestation",
       key: "group_prestation",
+      render: (text) => text ? 'BAGTM' : 'NON'
     },
     {
       title: "Point RV",
@@ -241,56 +255,27 @@ const IndependentGroups = () => {
       dataIndex: "group_responsable_phone_departure_day",
       key: "group_responsable_phone_departure_day",
     },
-    {
-      title: "Bus (nbre)",
-      dataIndex: "group_bus_number",
-      key: "group_bus_number",
-    },
-    {
-      title: "Responsable",
-      dataIndex: "group_responsable",
-      key: "group_responsable",
-    },
-    {
-      title: "Tel. responsable",
-      dataIndex: "group_responsable_phone",
-      key: "group_responsable_phone",
-    },
-    {
-      title: "Nom vendeur",
-      dataIndex: "group_seller_name",
-      key: "group_seller_name",
-    },
-    {
-      title: "Tel. vendeur",
-      dataIndex: "group_seller_phone",
-      key: "group_seller_phone",
-    },
-    {
-      title: "DPX (1 par train sensible)",
-      dataIndex: "group_dpx",
-      key: "group_dpx",
-    },
-    { title: "Commentaires", dataIndex: "group_comment", key: "group_comment" },
   ];
 
+  const inputHandler = (e) => {
+    const lowerCase = e.target.value.toLowerCase();
+    setInputText(lowerCase);
+  };
+
   return (
-    <Container>
+    <Container title={'Groupes autonomes'}>
       <div>
-        <HeaderGroupContainer>
-          <HeaderTitle>Suivi des groupes autonomes</HeaderTitle>
-          <p>
-            Tableau de tous les trains contenant des groupes autonomes avec des
-            filtres applicables.
-          </p>
-        </HeaderGroupContainer>
         <ListGroups>
           <HeaderTable>
-            <SearchInput
-              placeholder="Rechercher un n° de train"
-              style={{ width: 200 }}
-            />
-            <div>
+            <div style={{ display: 'flex', flexDirection: 'row', width: '80%' }}>
+              <Input
+                  onChange={inputHandler}
+                  style={{ marginRight: '20px', borderRadius: '6px', width: '40%', fontSize: '17px' }}
+                  placeholder="Rechercher par numéro de train ou nom de groupe"
+                  prefix={<SearchOutlined />}
+              />
+            </div>
+            <div style={{ width: '20%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-end' }}>
               <Button onClick={() => setOpenUpdateModal((c) => !c)} style={{ marginRight: '20px' }}>
                 Mettre à jour les groupes de saison
               </Button>
@@ -303,6 +288,7 @@ const IndependentGroups = () => {
             columns={trainColumns}
             expandedColumns={expandedColumns}
             data={renderData}
+            inputText={inputText}
           />
         </ListGroups>
       </div>
@@ -342,27 +328,17 @@ const HeaderTable = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-bottom: 15px;
-`;
-
-const SearchInput = styled.input`
-  outline: none;
-  border: none;
-  border-radius: 5px;
-  font-size: 15px;
-  padding: 8px;
-  color: grey;
-  box-shadow: rgba(0, 0, 0, 0.02) 0px 6px 24px 0px,
-    rgba(0, 0, 0, 0.05) 0px 0px 0px 1px;
+  width: 100%;
 `;
 
 const ListGroups = styled.div`
-  width: auto;
   height: auto;
+  width: auto;
   margin: 25px 40px 40px 40px;
-  padding: 30px 30px 15px 30px;
-  border-radius: 10px;
-  background-color: #fff;
-  box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
+  @media (max-width: 992px) {
+    width: 200%;
+    margin: 0;
+  }
 `;
 
 export default IndependentGroups;

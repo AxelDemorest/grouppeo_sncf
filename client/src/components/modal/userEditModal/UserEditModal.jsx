@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import { Form, Input, Modal, Select } from "antd";
 import styled from "styled-components";
 
@@ -10,12 +10,6 @@ const UserEditModal = ({
     record
 }) => {
     const [formEdit] = Form.useForm();
-
-    useEffect(() => {
-        setTimeout(() => {
-            formEdit.resetFields();
-        });
-    }, [record, formEdit]);
 
     const handleOk = () => {
         formEdit
@@ -30,7 +24,7 @@ const UserEditModal = ({
 
     return (
         <>
-            <Modal
+            <Modal destroyOnClose
                 style={{ top: '150px' }}
                 bodyStyle={{ height: 320 }}
                 width={1000}
@@ -45,28 +39,29 @@ const UserEditModal = ({
                 cancelText="Retour"
                 confirmLoading={confirmLoading}
             >
-                <FormModal
+                <Form
+                    preserve={false}
                     form={formEdit}
                     layout="vertical"
-                    name="edit_group_form"
-                    initialValues={record}
+                    name="edit_user_form"
+                    style={{ display: "flex", flexWrap: "wrap" }}
                 >
-                    <FormItem hidden={true} name="user_id">
+                    <FormItem hidden={true} name="user_id" initialValue={record.user_id}>
                         <Input />
                     </FormItem>
-                    <FormItem name="user_cp" label="CP">
+                    <FormItem name="user_cp" label="CP" initialValue={record.user_cp}>
                         <Input />
                     </FormItem>
-                    <FormItem name="user_mail" label="Email">
+                    <FormItem name="user_mail" label="Email" initialValue={record.user_mail}>
                         <Input />
                     </FormItem>
-                    <FormItem name="user_first_name" label="Prénom">
+                    <FormItem name="user_first_name" label="Prénom" initialValue={record.user_first_name}>
                         <Input />
                     </FormItem>
-                    <FormItem name="user_last_name" label="Nom de famille">
+                    <FormItem name="user_last_name" label="Nom de famille" initialValue={record.user_last_name}>
                         <Input />
                     </FormItem>
-                    <FormItem name="user_type" label="Rôle">
+                    <FormItem name="user_type" label="Rôle" initialValue={record.user_type}>
                         <Select>
                             <Select.Option value="Administrateur">Administrateur</Select.Option>
                             <Select.Option value="UO service">UO Service</Select.Option>
@@ -74,18 +69,12 @@ const UserEditModal = ({
                             <Select.Option value="Utilisateur">Utilisateur</Select.Option>
                         </Select>
                     </FormItem>
-                </FormModal>
+                </Form>
                 <p>Lors de la validation du formulaire, un mail sera envoyé à l'adresse indiquée dans le champs "Email" pour récupérer le mot de passe généré.</p>
             </Modal>
         </>
     );
 };
-
-const FormModal = styled(Form)`
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-`;
 
 const FormItem = styled(Form.Item)`
   margin-right: 20px !important;

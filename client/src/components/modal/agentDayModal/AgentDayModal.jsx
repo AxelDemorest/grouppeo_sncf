@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { DatePicker, Form, Input, Modal, Select } from "antd";
-import styled from "styled-components";
+import React, { useState } from "react";
+import { DatePicker, Modal } from "antd";
 
 const AgentDayModal = ({
     open,
@@ -9,14 +8,18 @@ const AgentDayModal = ({
     confirmLoading,
     userId,
 }) => {
-    const [datePicker, setDatePicker] = useState();
+    const [datePicker, setDatePicker] = useState('');
 
     const handleOk = () => {
         onCreate(datePicker, userId);
     };
 
     const onChange = (date, dateString) => {
-       setDatePicker(new Date(dateString).toDateString());
+        const dateFormat = new Date(dateString).toLocaleDateString(
+            'fr-FR',
+            { year: 'numeric', month: '2-digit', day: '2-digit' }
+        ).replace(new RegExp("/", "g"), '-')
+        setDatePicker(dateFormat);
     };
 
     return (

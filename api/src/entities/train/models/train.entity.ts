@@ -18,6 +18,9 @@ export class Train {
   @Column({ default: null })
   train_track: string;
 
+  @Column({ default: null })
+  train_period: string;
+
   @OneToMany(() => Group, (group) => group.group_train, {
     nullable: true,
     cascade: true,

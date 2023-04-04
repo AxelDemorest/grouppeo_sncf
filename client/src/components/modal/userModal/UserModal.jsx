@@ -78,11 +78,12 @@ const UserModal = ({
                         <Input />
                     </FormItem>
                     <FormItem name="user_type" label="Rôle">
-                        <Select disabled={agentInput ? false : true}>
+                        <Select disabled={!agentInput}>
                             <Select.Option value="Administrateur">Administrateur</Select.Option>
                             <Select.Option value="UO service">UO Service</Select.Option>
                             <Select.Option value="Agent">Agent</Select.Option>
                             <Select.Option value="Utilisateur">Utilisateur</Select.Option>
+                            <Select.Option value="DPX">DPX</Select.Option>
                         </Select>
                     </FormItem>
                 </FormModal>
