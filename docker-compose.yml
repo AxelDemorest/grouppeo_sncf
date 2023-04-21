@@ -9,7 +9,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - /Users/axel/Desktop/Bureau/Axel/Professionnel/Projets/grouppeo_sncf/client:/app
+      - /Users/axel/Desktop/grouppeo_sncf/client:/app
 
   api:
     container_name: api
@@ -19,4 +19,4 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - /Users/axel/Desktop/Bureau/Axel/Professionnel/Projets/grouppeo_sncf/api:/app
+      - /Users/axel/Desktop/grouppeo_sncf/api:/app

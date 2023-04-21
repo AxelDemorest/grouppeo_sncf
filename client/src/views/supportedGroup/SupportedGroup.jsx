@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import axios from "axios";
 import {Button, Input} from "antd";
 import styled from "styled-components";
@@ -16,6 +16,7 @@ const SupportedGroup = () => {
   const [open, setOpen] = React.useState(false);
   const [confirmLoading, setConfirmLoading] = React.useState(false);
   const [record, setRecord] = React.useState({});
+  const [inputText, setInputText] = useState("");
 
   React.useEffect(() => {
     const getTrainsWithSupportedGroups = async () => {
@@ -55,6 +56,11 @@ const SupportedGroup = () => {
     await axios.patch(`${process.env.REACT_APP_API_HOST}/group/${record.group_id}/type/switch`);
     setIsDataImport(!isDataImport)
   }
+
+  const inputHandler = (e) => {
+    const lowerCase = e.target.value.toLowerCase();
+    setInputText(lowerCase);
+  };
 
   const expandedColumns = [
     {
@@ -136,13 +142,19 @@ const SupportedGroup = () => {
         <ListGroups>
           <HeaderTable>
             <div style={{ display: 'flex', flexDirection: 'row', width: '80%' }}>
-              <Input style={{ marginRight: '20px', borderRadius: '6px', width: '40%', fontSize: '17px' }} placeholder="Rechercher un groupe" prefix={<SearchOutlined />} />
+              <Input
+                  onChange={inputHandler}
+                  style={{ marginRight: '20px', borderRadius: '6px', width: '40%', fontSize: '17px' }}
+                  placeholder="Rechercher un groupe"
+                  prefix={<SearchOutlined />}
+              />
             </div>
           </HeaderTable>
           <NestedTableTrains
             columns={trainColumns}
             expandedColumns={expandedColumns}
             data={TrainData}
+            inputText={inputText}
           />
           <GroupEditForm
             open={open}

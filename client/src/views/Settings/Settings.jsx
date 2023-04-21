@@ -41,13 +41,7 @@ const Settings = () => {
     ];
 
     return (
-        <Container>
-            <HeaderGroupContainer>
-                <HeaderTitle>Réglages</HeaderTitle>
-                <p>
-                    Modifiez les paramètres du site en ayant accès à différents onglets.
-                </p>
-            </HeaderGroupContainer>
+        <Container title={'Réglages'}>
             <styled.ListTabs>
                 <Tabs defaultActiveKey="1" items={items} />
             </styled.ListTabs>

@@ -6,13 +6,13 @@ import {Button, Table} from "antd";
 import axios from "axios";
 import { BiCheck, BiLoaderAlt } from 'react-icons/bi';
 import {handleApiError} from "../../helpers/api";
+import styledComponent from 'styled-components';
 
 const statuses = [
     { id: 1, title: 'Groupe arrivé' },
-    { id: 2, title: 'Groupe pris en charge' },
-    { id: 3, title: 'Groupe installé' },
-    { id: 4, title: 'TM en cours' },
-    { id: 5, title: 'TM terminée' },
+    { id: 2, title: 'Groupe installé' },
+    { id: 3, title: 'TM débutée' },
+    { id: 4, title: 'TM terminée' },
 ];
 
 function useGroupStatus(currentGroupId) {
@@ -44,10 +44,11 @@ const Supervision = () => {
             'fr-FR',
             { year: 'numeric', month: '2-digit', day: '2-digit' }
         );
+        console.log(date);
         const fetchData = async () => {
             try {
                 const response = await axios.get('/group/list/date', {
-                    params: { date },
+                    params: { date: '12/02/2023' },
                     baseURL: process.env.REACT_APP_API_HOST,
                 });
                 setData(response.data);
@@ -62,7 +63,7 @@ const Supervision = () => {
         {
             title: "Actions",
             key: "group_actions",
-            width: 200,
+            width: 110,
             render: (text, record) => (
                 <>
                     <Button
@@ -76,39 +77,73 @@ const Supervision = () => {
                 </>
             ),
         },
+        /*{
+            title: "Groupe arrivé",
+            key: "group_arrived",
+            width: 150,
+            render: (text, record) => {
+                return {
+                    props: {
+                        style: {
+                            background: currentStatus?.find(findStatus => findStatus.status.name === 'Groupe arrivé') ? "#8ED984" : "#E85F4D"
+                        },
+
+                    },
+                    children: <div>{currentStatus?.find(findStatus => findStatus.status.name === 'Groupe arrivé') ? "Terminé" : "En attente"}</div>
+                };
+            },
+        },
+        {
+            title: "Groupe installé",
+            key: "group_in_train",
+            width: 150,
+            render: (text, record) => {
+                return {
+                    props: {
+                        style: { background: currentStatus?.find(findStatus => findStatus.status.name === 'Groupe installé') ? "#8ED984" : "#E85F4D" }
+                    },
+                    children: <div>{currentStatus?.find(findStatus => findStatus.status.name === 'Groupe installé') ? "Terminé" : "En attente"}</div>
+                };
+            },
+        },*/
         {
             title: "Heure de départ",
             dataIndex: ['group_train', 'train_hour'],
             key: "train_hour",
+            width: 140,
         },
         {
             title: "Numéro du train",
             dataIndex: ['group_train', 'train_number'],
             key: "train_number",
+            width: 140,
         },
         {
             title: "Voie",
             dataIndex: ['group_train', 'train_track'],
             key: "train_track",
-            render: (text) => text ? text : 'Pas renseignée'
+            width: 140,
+            render: (text) => text ? text : 'Pas renseignée',
         },
         {
             title: "Destination",
             dataIndex: "group_destination",
             key: "group_destination",
+            width: 150,
         },
-        { title: "Nom groupe", dataIndex: "group_name", key: "group_name" },
+        { title: "Nom groupe", dataIndex: "group_name", key: "group_name", width: 240, },
         {
             title: "Total voyageurs",
             dataIndex: "group_total_travellers",
             key: "group_total_travellers",
+            width: 135,
         },
         {
             title: "N° Voiture",
             dataIndex: "group_car_number",
             key: "group_car_number",
         },
-        { title: "Nature groupe", dataIndex: "group_type", key: "group_type" },
+        { title: "Nature groupe", dataIndex: "group_type", key: "group_type", width: 140, },
         {
             title: "Prestation",
             dataIndex: "group_prestation",
@@ -146,7 +181,7 @@ const Supervision = () => {
         <Container title={'Supervision des groupes'}>
             <div style={{ display: 'flex', flexDirection: 'row', width: '100%', height: 'calc(100% - 100px)' }}>
                 <styled.StepsContainer>
-                    <h3>Étapes du groupe</h3>
+                    <h3>Étapes du groupe : {currentGroup?.group_name}</h3>
                     {currentGroup && (
                         <>
                             {otherStatuses.map((status) => {
@@ -172,6 +207,7 @@ const Supervision = () => {
                                                 <styled.StepCardTitle>Étape {status.id}</styled.StepCardTitle>
                                                 <styled.StepCardDescription>{status.title}</styled.StepCardDescription>
                                                 <styled.StepCardTag>En attente</styled.StepCardTag>
+                                                <Button>Valider l'étape</Button>
                                             </styled.StepCardInWaiting>
                                         )}
                                     </>

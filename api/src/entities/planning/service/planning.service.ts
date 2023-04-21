@@ -73,16 +73,27 @@ export class PlanningService {
               if (
                 moment(group.group_meeting_time.replace('H', ':'), 'H:mm')
                   .add(30, 'minutes')
-                  .isAfter(moment(findUser.end_time, 'H:mm'))
+                  .isAfter(moment(findUser.end_time, 'H:mm')) ||
+                (group.group_prestation &&
+                  findUser.planning_groups.some((planningGroup) =>
+                    moment(
+                      planningGroup.group_meeting_time.replace('H', ':'),
+                      'H:mm',
+                    )
+                      .add(1, 'hour')
+                      .isBefore(
+                        moment(
+                          group.group_meeting_time.replace('H', ':'),
+                          'H:mm',
+                        ),
+                      ),
+                  ))
               )
                 continue;
 
               const lastTrain = listLastTrains.find(
                 (x) => x.id === agents[i].user_id,
               );
-
-              // TODO : Check si dans le train il y a un group ayant le même point de RDV (sûrement avec un find)
-              // Si g = 0, je check si y'en a qui ont le même point de RDV et je les assigne si besoin
 
               if (
                 train.train_groups[g - 1]?.group_meeting_point ===

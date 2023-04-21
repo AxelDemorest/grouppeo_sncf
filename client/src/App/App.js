@@ -12,6 +12,7 @@ import PlanningList from "../views/Planning/PlanningList/PlanningList";
 import PlanningDetail from "../views/Planning/PlanningDetail/PlanningDetail";
 import Settings from "../views/Settings/Settings";
 import Supervision from "../views/Supervision/Supervision";
+import PlanningCreate from "../views/Planning/PlanningCreate/PlanningCreate";
 
 function App() {
   return (
@@ -67,6 +68,11 @@ function App() {
             <Route exact path="/supervision" element={
               <RequireAuth>
                 <Supervision />
+              </RequireAuth>
+            }/>
+            <Route exact path="/creation-planning" element={
+              <RequireAuth>
+                <PlanningCreate />
               </RequireAuth>
             }/>
           </Routes>

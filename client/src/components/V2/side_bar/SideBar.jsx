@@ -25,6 +25,7 @@ const SideBar = ({ showSideBar, toggleSideBar }) => {
                 { to: "/liste-des-plannings", icon: <BsListCheck className="sideBarIcon" />, label: "Les plannings" },
                 { to: "/gestion-des-utilisateurs", icon: <AiOutlineUserAdd className="sideBarIcon" />, label: "Gestion des utilisateurs" },
                 { to: "/gestion-des-agents", icon: <BsBriefcase className="sideBarIcon" />, label: "Gestion des agents" },
+                { to: "/planning", icon: <RiMapPinTimeLine className="sideBarIcon" />, label: "Mon espace agent" },
             ],
         },
         {

@@ -12,7 +12,7 @@ const PlanningView = () => {
 
     useEffect(() => {
         const getPlanning = () => {
-            axios.get(`${process.env.REACT_APP_API_HOST}/planning/day/${datePicker}/user/14`).then((res) => {
+            axios.get(`${process.env.REACT_APP_API_HOST}/planning/day/12-02-2023/user/6`).then((res) => {
                 setPlanning(res.data.planning_groups);
             }).catch((err) => console.error(err));
         }

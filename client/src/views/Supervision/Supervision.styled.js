@@ -1,7 +1,7 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 export const StepsContainer = styled.div`
-    width: 13%;
+    width: 30%;
     padding: 20px;
     border-right: 1px solid #e8e8e8;
     background-color: #fff;
@@ -77,6 +77,7 @@ export const StepCardTag = styled.span`
     font-weight: 600;
     display: inline-block;
     margin-top: 7px;
+    margin-right: 10px;
 `;
 
 export const StepCardTagSuccess = styled.span`
@@ -93,7 +94,7 @@ export const StepCardTagSuccess = styled.span`
 export const ListGroupContainer = styled.div`
   display: flex;
   flex-direction: column;
-  width: 87%;
+  width: 75%;
 `;
 
 export const ListGroups = styled.div`
@@ -104,4 +105,22 @@ export const ListGroups = styled.div`
     width: 200%;
     margin: 0;
   }
+`;
+
+const greenCell = css`
+    background-color: #c1f1d8;
+`;
+
+const redCell = css`
+  background-color: #f1c1c1;
+`;
+
+const normalCell = css`
+    background-color: white;
+`;
+
+export const Cell = styled.div`
+  ${(props) => props.isFinished ? greenCell : props.isWaiting ? redCell : normalCell}
+  width: 100%;
+  height: 100%;
 `;

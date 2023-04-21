@@ -48,20 +48,20 @@ const IndependentGroups = () => {
 
   const convertToJson = (headers, data) => {
     const headersDatabase = {
-      "Dates": "train_date",
-      "No-de-train": "train_number",
-      "Heure": "train_hour",
-      "Destination": "group_destination",
+      "Date-départ": "train_date",
+      "N°-train": "train_number",
+      "Heure-départ": "train_hour",
+      "Destination2": "group_destination",
       "Nom-groupe": "group_name",
-      "Nbre-places": "group_total_travellers",
-      "N°\n-Voiture": "group_car_number",
-      "Nature-groupe": "group_type",
+      "Nombre-pax": "group_total_travellers",
+      "N°-voiture": "group_car_number",
+      "Type-Groupe": "group_type",
       "Prestation": "group_prestation",
       "Point-RV": "group_meeting_point",
       "Heure-RV": "group_meeting_time",
       "Responsable-jour-du-départ": "group_responsable_departure_day",
       "Tel-\n-responsable": "group_responsable_phone_departure_day",
-      "MAIL-CLIENT": "group_mail",
+      "Mail": "group_mail",
     };
 
     return data

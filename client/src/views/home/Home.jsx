@@ -70,7 +70,7 @@ const Home = () => {
                     <Box>
                         <div>
                             <h3>
-                                120
+                                0
                             </h3>
                             <p>
                                 Groupes pris en charge
@@ -85,10 +85,10 @@ const Home = () => {
                     <Box>
                         <div>
                             <h3>
-                                120
+                                0
                             </h3>
                             <p>
-                                Groupes pris en charge
+                                Groupes autonomes
                             </p>
                         </div>
                         <div>
@@ -100,10 +100,10 @@ const Home = () => {
                     <Box>
                         <div>
                             <h3>
-                                120
+                                0
                             </h3>
                             <p>
-                                Groupes pris en charge
+                                Renforts
                             </p>
                         </div>
                         <div>
@@ -115,10 +115,10 @@ const Home = () => {
                     <Box>
                         <div>
                             <h3>
-                                120
+                                0
                             </h3>
                             <p>
-                                Groupes pris en charge
+                                Trains
                             </p>
                         </div>
                         <div>
