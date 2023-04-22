@@ -1,3 +1,8 @@
+@font-face {
+  font-family: "Avenir";
+  src: url("./fonts/AvenirLTStd-Roman.otf") format("opentype");
+}
+
 body, button {
   margin: 0;
   font-family: 'Avenir', sans-serif;
