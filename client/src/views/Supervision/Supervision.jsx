@@ -31,13 +31,17 @@ function useGroupStatus(currentGroupId) {
         fetchStatus();
     }, [currentGroupId]);
 
-    return currentStatus;
+    const updateStatus = (newStatus) => {
+        setCurrentStatus((prevStatus) => [...prevStatus, newStatus]);
+    };
+
+    return { currentStatus, updateStatus };
 }
 
 const Supervision = () => {
     const [data, setData] = React.useState([]);
     const [currentGroup, setCurrentGroup] = React.useState({});
-    const currentStatus = useGroupStatus(currentGroup.group_id);
+    const { currentStatus, updateStatus } = useGroupStatus(currentGroup.group_id);
 
     useEffect(() => {
         const date = new Date().toLocaleDateString(
@@ -190,6 +194,18 @@ const Supervision = () => {
     const onClick = async ( currentGroupId, statusId ) => {
         try {
             await axios.post(`${process.env.REACT_APP_API_HOST}/api/group-status/${currentGroupId}/statuses/${statusId}`);
+            const newStatus = { status: { name: statuses.find((s) => s.id === statusId).title } };
+            updateStatus(newStatus);
+            setData((prevData) =>
+                prevData.map((group) =>
+                    group.group_id === currentGroup.group_id
+                        ? {
+                            ...group,
+                            groupStatus: [...group.groupStatus, newStatus],
+                        }
+                        : group
+                )
+            );
         } catch (error) {
             handleApiError(error);
         }
