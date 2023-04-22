@@ -6,7 +6,6 @@ import {Button, Table} from "antd";
 import axios from "axios";
 import { BiCheck, BiLoaderAlt } from 'react-icons/bi';
 import {handleApiError} from "../../helpers/api";
-import styledComponent from 'styled-components';
 
 const statuses = [
     { id: 1, title: 'Groupe arrivé' },

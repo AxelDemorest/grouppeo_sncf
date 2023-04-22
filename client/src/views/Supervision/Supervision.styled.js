@@ -1,4 +1,5 @@
 import styled, { css } from "styled-components";
+import {Table} from "antd";
 
 export const StepsContainer = styled.div`
     width: 30%;
@@ -117,6 +118,13 @@ const redCell = css`
 
 const normalCell = css`
     background-color: white;
+`;
+
+const CustomTable = styled(Table)`
+  .ant-table-thead > tr > th {
+    height: 5px;
+    padding: 4px;
+  }
 `;
 
 export const Cell = styled.div`
