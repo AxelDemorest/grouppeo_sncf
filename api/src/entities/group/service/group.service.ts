@@ -108,6 +108,8 @@ export class GroupService {
     return await this.groupsRepository
       .createQueryBuilder('group')
       .leftJoinAndSelect('group.group_train', 'train')
+      .leftJoinAndSelect('group.groupStatus', 'groupStatus')
+      .leftJoinAndSelect('groupStatus.status', 'status')
       .where('train.train_date = :train_date', { train_date: formatDate })
       .andWhere('group.group_is_supported = :group_is_supported', {
         group_is_supported: true,
