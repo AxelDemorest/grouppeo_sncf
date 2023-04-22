@@ -10,16 +10,16 @@ import styledComponent from 'styled-components';
 
 const statuses = [
     { id: 1, title: 'Groupe arrivé' },
-    { id: 2, title: 'Groupe installé' },
-    { id: 3, title: 'TM débutée' },
-    { id: 4, title: 'TM terminée' },
+    { id: 3, title: 'Groupe installé' },
+    { id: 4, title: 'TM débutée' },
+    { id: 5, title: 'TM terminée' },
 ];
 
 function useGroupStatus(currentGroupId) {
     const [currentStatus, setCurrentStatus] = React.useState([]);
 
     useEffect(() => {
-        async function fetchStatus() {
+        const fetchStatus = async () => {
             try {
                 const response = await axios.get(`${process.env.REACT_APP_API_HOST}/api/group-status/${currentGroupId}/status`);
                 setCurrentStatus(response.data);
@@ -27,7 +27,8 @@ function useGroupStatus(currentGroupId) {
                 console.error(error);
                 setCurrentStatus([]);
             }
-        }
+        };
+
         fetchStatus();
     }, [currentGroupId]);
 
@@ -48,7 +49,7 @@ const Supervision = () => {
         const fetchData = async () => {
             try {
                 const response = await axios.get('/group/list/date', {
-                    params: { date: '12/02/2023' },
+                    params: { date: date },
                     baseURL: process.env.REACT_APP_API_HOST,
                 });
                 setData(response.data);
@@ -77,19 +78,23 @@ const Supervision = () => {
                 </>
             ),
         },
-        /*{
+        {
             title: "Groupe arrivé",
             key: "group_arrived",
             width: 150,
             render: (text, record) => {
+                console.log(record)
                 return {
                     props: {
                         style: {
-                            background: currentStatus?.find(findStatus => findStatus.status.name === 'Groupe arrivé') ? "#8ED984" : "#E85F4D"
+                            color: record?.groupStatus.find(findStatus => findStatus.status.name === 'Groupe arrivé') ? "#8ED984" : "#E85F4D",
+                            fontWeight: 'bold',
+                            fontSize: '1rem',
+                            textAlign: 'center'
                         },
 
                     },
-                    children: <div>{currentStatus?.find(findStatus => findStatus.status.name === 'Groupe arrivé') ? "Terminé" : "En attente"}</div>
+                    children: <div>{record?.groupStatus.find(findStatus => findStatus.status.name === 'Groupe arrivé') ? "Terminé" : "En attente"}</div>
                 };
             },
         },
@@ -100,12 +105,18 @@ const Supervision = () => {
             render: (text, record) => {
                 return {
                     props: {
-                        style: { background: currentStatus?.find(findStatus => findStatus.status.name === 'Groupe installé') ? "#8ED984" : "#E85F4D" }
+                        style: {
+                            color: record?.groupStatus.find(findStatus => findStatus.status.name === 'Groupe installé') ? "#8ED984" : "#E85F4D",
+                            fontWeight: 'bold',
+                            fontSize: '1rem',
+                            textAlign: 'center'
+                        },
+
                     },
-                    children: <div>{currentStatus?.find(findStatus => findStatus.status.name === 'Groupe installé') ? "Terminé" : "En attente"}</div>
+                    children: <div>{record?.groupStatus.find(findStatus => findStatus.status.name === 'Groupe installé') ? "Terminé" : "En attente"}</div>
                 };
             },
-        },*/
+        },
         {
             title: "Heure de départ",
             dataIndex: ['group_train', 'train_hour'],
@@ -177,6 +188,14 @@ const Supervision = () => {
     const tmStatuses = statuses.filter((status) => status.title.includes('TM'));
     const otherStatuses = statuses.filter((status) => !status.title.includes('TM'));
 
+    const onClick = async ( currentGroupId, statusId ) => {
+        try {
+            await axios.post(`${process.env.REACT_APP_API_HOST}/api/group-status/${currentGroupId}/statuses/${statusId}`);
+        } catch (error) {
+            handleApiError(error);
+        }
+    }
+
     return (
         <Container title={'Supervision des groupes'}>
             <div style={{ display: 'flex', flexDirection: 'row', width: '100%', height: 'calc(100% - 100px)' }}>
@@ -207,7 +226,7 @@ const Supervision = () => {
                                                 <styled.StepCardTitle>Étape {status.id}</styled.StepCardTitle>
                                                 <styled.StepCardDescription>{status.title}</styled.StepCardDescription>
                                                 <styled.StepCardTag>En attente</styled.StepCardTag>
-                                                <Button>Valider l'étape</Button>
+                                                <Button onClick={() => onClick(currentGroup.group_id, status.id)}>Valider l'étape</Button>
                                             </styled.StepCardInWaiting>
                                         )}
                                     </>
@@ -240,6 +259,7 @@ const Supervision = () => {
                                                             <styled.StepCardTitle>Étape {status.id}</styled.StepCardTitle>
                                                             <styled.StepCardDescription>{status.title}</styled.StepCardDescription>
                                                             <styled.StepCardTag>En attente</styled.StepCardTag>
+                                                            <Button onClick={() => onClick(currentGroup.group_id, status.id)}>Valider l'étape</Button>
                                                         </styled.StepCardInWaiting>
                                                     )}
                                                 </>
