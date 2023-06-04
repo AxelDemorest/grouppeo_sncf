@@ -14,13 +14,13 @@ const PlanningItem = ({ item }) => {
 
     useEffect(() => {
         const getCountOfGroups = () => {
-            axios.get(`${process.env.REACT_APP_API_HOST}/group/date/${formatDate}`).then((res) => {
+            axios.get(`${import.meta.env.VITE_API_HOST}/group/date/${formatDate}`).then((res) => {
                 setGroupCount(res.data);
             }).catch((err) => console.error(err));
         }
 
         const getCountOfAgents = () => {
-            axios.get(`${process.env.REACT_APP_API_HOST}/user/day/agents/count/${formatDate}`).then((res) => {
+            axios.get(`${import.meta.env.VITE_API_HOST}/user/day/agents/count/${formatDate}`).then((res) => {
                 setAgentCount(res.data);
             }).catch((err) => console.error(err));
         }

@@ -2,7 +2,7 @@ import React, {useEffect} from 'react';
 import Container from "../../components/container/Container";
 import {HeaderGroupContainer, HeaderTitle} from "../../style/groupsStyles";
 import * as styled from "./Supervision.styled";
-import {Button, Table} from "antd";
+import {Button, Input, Table} from "antd";
 import axios from "axios";
 import { BiCheck, BiLoaderAlt } from 'react-icons/bi';
 import {handleApiError} from "../../helpers/api";
@@ -20,7 +20,7 @@ function useGroupStatus(currentGroupId) {
     useEffect(() => {
         const fetchStatus = async () => {
             try {
-                const response = await axios.get(`${process.env.REACT_APP_API_HOST}/api/group-status/${currentGroupId}/status`);
+                const response = await axios.get(`${import.meta.env.VITE_API_HOST}/api/group-status/${currentGroupId}/status`);
                 setCurrentStatus(response.data);
             } catch (error) {
                 console.error(error);
@@ -41,6 +41,7 @@ function useGroupStatus(currentGroupId) {
 const Supervision = () => {
     const [data, setData] = React.useState([]);
     const [currentGroup, setCurrentGroup] = React.useState({});
+    const [trainTracks, setTrainTracks] = React.useState({});
     const { currentStatus, updateStatus } = useGroupStatus(currentGroup.group_id);
 
     useEffect(() => {
@@ -52,8 +53,8 @@ const Supervision = () => {
         const fetchData = async () => {
             try {
                 const response = await axios.get('/group/list/date', {
-                    params: { date: date },
-                    baseURL: process.env.REACT_APP_API_HOST,
+                    params: { date: '22-04-2023' },
+                    baseURL: import.meta.env.VITE_API_HOST,
                 });
                 setData(response.data);
             } catch (error) {
@@ -63,11 +64,21 @@ const Supervision = () => {
         fetchData();
     }, []);
 
+    /*const updateTrainTrack = async (groupId) => {
+        const trainTrack = trainTracks[groupId];
+        if (!trainTrack) return;
+
+        try {
+            await axios.post(`http://localhost:3001/group/${groupId}/train-track`, { trainTrack });
+        } catch (error) {
+            handleApiError(error);
+        }
+    };*/
+
     const planningColumns = [
         {
             title: "Actions",
             key: "group_actions",
-            width: 110,
             render: (text, record) => (
                 <>
                     <Button
@@ -84,9 +95,7 @@ const Supervision = () => {
         {
             title: "Groupe arrivé",
             key: "group_arrived",
-            width: 150,
             render: (text, record) => {
-                console.log(record)
                 return {
                     props: {
                         style: {
@@ -104,7 +113,6 @@ const Supervision = () => {
         {
             title: "Groupe installé",
             key: "group_in_train",
-            width: 150,
             render: (text, record) => {
                 return {
                     props: {
@@ -124,20 +132,19 @@ const Supervision = () => {
             title: "Heure de départ",
             dataIndex: ['group_train', 'train_hour'],
             key: "train_hour",
-            width: 140,
         },
         {
             title: "Numéro du train",
             dataIndex: ['group_train', 'train_number'],
             key: "train_number",
-            width: 140,
         },
         {
             title: "Voie",
             dataIndex: ['group_train', 'train_track'],
             key: "train_track",
-            width: 140,
-            render: (text) => text ? text : 'Pas renseignée',
+            render: (text, record) => (
+                <p>Pas renseigné</p>
+            ),
         },
         {
             title: "Destination",
@@ -150,7 +157,6 @@ const Supervision = () => {
             title: "Total voyageurs",
             dataIndex: "group_total_travellers",
             key: "group_total_travellers",
-            width: 135,
         },
         {
             title: "N° Voiture",
@@ -193,7 +199,7 @@ const Supervision = () => {
 
     const onClick = async ( currentGroupId, statusId ) => {
         try {
-            await axios.post(`${process.env.REACT_APP_API_HOST}/api/group-status/${currentGroupId}/statuses/${statusId}`);
+            await axios.post(`${import.meta.env.VITE_API_HOST}/api/group-status/${currentGroupId}/statuses/${statusId}`);
             const newStatus = { status: { name: statuses.find((s) => s.id === statusId).title } };
             updateStatus(newStatus);
             setData((prevData) =>
@@ -302,7 +308,7 @@ const Supervision = () => {
                                 key: obj.group_id,
                                 ...obj,
                             }))}
-                            scroll={{ y: 1085 }}
+                            scroll={{ x: 1085 }}
                             style={{ marginTop: '20px' }}
                         />
                     </styled.ListGroups>

@@ -4,11 +4,13 @@ import {
   ForbiddenException,
   Get,
   HttpStatus,
+  NotFoundException,
   Param,
   Post,
   Res,
 } from '@nestjs/common';
 import { PlanningService } from '../service/planning.service';
+import { AssignAgentDto } from '../models/dto/assign-agent.dto';
 
 @Controller('planning')
 export class PlanningController {
@@ -34,6 +36,18 @@ export class PlanningController {
       message: 'PlanningView has been generated successfully!',
       post: generatedPlanning,
     });
+  }
+
+  @Post('assign-agent')
+  async assignAgentToUser(
+    @Body() assignAgentDto: AssignAgentDto,
+  ): Promise<any> {
+    const response = this.planningService.assignAgentToUser(assignAgentDto);
+    if (!response)
+      throw new NotFoundException(
+        `No planning found for agent number ${assignAgentDto.agentNumber} on day ${assignAgentDto.day}`,
+      );
+    return response;
   }
 
   /**

@@ -22,6 +22,9 @@ export class Planning {
   @Column()
   planning_day: string;
 
+  @Column({ nullable: true })
+  agentNumber: number;
+
   @ManyToOne(() => User, (user) => user.user_planning, {
     nullable: true,
     onDelete: 'CASCADE',

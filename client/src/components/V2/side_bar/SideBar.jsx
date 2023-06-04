@@ -7,7 +7,7 @@ import { BsListCheck, BsBriefcase } from 'react-icons/bs';
 import { RiMapPinTimeLine } from 'react-icons/ri';
 import { AiOutlineUsergroupDelete, AiOutlineUsergroupAdd, AiOutlineEye, AiOutlineUserAdd, AiOutlineSetting } from 'react-icons/ai';
 import logo from '../../../assets/GrouppeoSideBar.png';
-import '../../sideBar/sideBar.css';
+import './sideBar.css';
 import {AuthContext} from "../../../context/AuthContext";
 
 const SideBar = ({ showSideBar, toggleSideBar }) => {

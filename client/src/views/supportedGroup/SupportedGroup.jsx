@@ -21,7 +21,7 @@ const SupportedGroup = () => {
   React.useEffect(() => {
     const getTrainsWithSupportedGroups = async () => {
       const { data } = await axios.get(
-        `${process.env.REACT_APP_API_HOST}/train/train_groups_supported`,
+        `${import.meta.env.VITE_API_HOST}/train/train_groups_supported`,
       );
       setTrainData(data);
     };
@@ -30,7 +30,7 @@ const SupportedGroup = () => {
   }, [isDataImport]);
 
   const onCreate = async (values, form) => {
-    await axios.patch(`${process.env.REACT_APP_API_HOST}/group/${values.group_id}`, values);
+    await axios.patch(`${import.meta.env.VITE_API_HOST}/group/${values.group_id}`, values);
     setIsDataImport((c) => !c);
     setConfirmLoading(true);
     setTimeout(() => {
@@ -53,7 +53,7 @@ const SupportedGroup = () => {
   ];
 
   const switchGroupType = async (record) => {
-    await axios.patch(`${process.env.REACT_APP_API_HOST}/group/${record.group_id}/type/switch`);
+    await axios.patch(`${import.meta.env.VITE_API_HOST}/group/${record.group_id}/type/switch`);
     setIsDataImport(!isDataImport)
   }
 

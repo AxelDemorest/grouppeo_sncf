@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Patch, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { GroupDTO } from '../models/group.dto';
 import { Group } from '../models/group.entity';
 import { GroupService } from '../service/group.service';
@@ -10,6 +18,11 @@ export class GroupController {
   @Get('/:group_id')
   getGroupById(@Param('group_id') group_id: number) {
     return this.groupService.getGroupById(group_id);
+  }
+
+  @Get('/supported-groups/:date')
+  findSupportedGroups(@Param('date') date: string) {
+    return this.groupService.findSupportedGroups(date);
   }
 
   @Get('day/:date')
@@ -56,5 +69,13 @@ export class GroupController {
   @Patch(':group_id/type/switch')
   updateType(@Param('group_id') group_id: number, @Body() data: GroupDTO) {
     return this.groupService.updateType(group_id, data);
+  }
+
+  @Post(':id/train-track')
+  async updateTrainTrack(
+    @Param('id') id: number,
+    @Body('trainTrack') trainTrack: string,
+  ) {
+    return this.groupService.updateTrainTrack(id, trainTrack);
   }
 }

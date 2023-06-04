@@ -16,7 +16,7 @@ const UserAdmin = () => {
     const [editModalOpen, setEditModalOpen] = useState(false);
 
     const handleDelete = async (item) => {
-        await axios.delete(`${process.env.REACT_APP_API_HOST}/user/${item.user_id}`);
+        await axios.delete(`${import.meta.env.VITE_API_HOST}/user/${item.user_id}`);
         setData((current) =>
             current.filter((currentItem) => currentItem.user_id !== item.user_id)
         );
@@ -24,7 +24,7 @@ const UserAdmin = () => {
 
     const onCreate = async (values, form) => {
         const { data } = await axios.post(
-            `${process.env.REACT_APP_API_HOST}/user/user`,
+            `${import.meta.env.VITE_API_HOST}/user/user`,
             values
         );
         setConfirmLoading(true);
@@ -41,7 +41,7 @@ const UserAdmin = () => {
     };
 
     const onEdit = async (values, formEdit) => {
-        await axios.patch(`${process.env.REACT_APP_API_HOST}/user/${values.user_id}`, values);
+        await axios.patch(`${import.meta.env.VITE_API_HOST}/user/${values.user_id}`, values);
         setConfirmLoading(true);
         const newState = data.map((obj) => {
             if (obj.user_id === values.user_id) {
@@ -60,7 +60,7 @@ const UserAdmin = () => {
 
     useEffect(() => {
         const getUsers = async () => {
-            const { data } = await axios.get(`${process.env.REACT_APP_API_HOST}/user/user`);
+            const { data } = await axios.get(`${import.meta.env.VITE_API_HOST}/user/user`);
             setData(data);
         };
 

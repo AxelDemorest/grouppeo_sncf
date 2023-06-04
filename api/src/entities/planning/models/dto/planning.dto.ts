@@ -1,11 +1,12 @@
-import { User } from '../../user/models/user.entity';
-import { Group } from '../../group/models/group.entity';
+import { User } from '../../../user/models/user.entity';
+import { Group } from '../../../group/models/group.entity';
 
 export class PlanningDTO {
-  planning_id: number;
+  agentNumber: number;
+  planning_id?: number;
   start_time: string;
   end_time: string;
-  planning_user: User;
+  planning_user?: User;
   planning_groups: Group[];
   planning_day: string;
 }

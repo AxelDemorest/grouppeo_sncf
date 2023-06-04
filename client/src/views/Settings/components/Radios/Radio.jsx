@@ -19,7 +19,7 @@ const Radio = () => {
     useEffect(() => {
         try {
             const fetchRadios = async () => {
-                const response = await axios.get(`${process.env.REACT_APP_API_HOST}/radio`);
+                const response = await axios.get(`${import.meta.env.VITE_API_HOST}/radio`);
                 setRadios(response.data)
             }
 
@@ -30,7 +30,7 @@ const Radio = () => {
     }, []);
 
     const handleDelete = async (item) => {
-        await axios.delete(`${process.env.REACT_APP_API_HOST}/radio/${item.id}`);
+        await axios.delete(`${import.meta.env.VITE_API_HOST}/radio/${item.id}`);
         setRadios((current) =>
             current.filter((currentItem) => currentItem.id !== item.id)
         );
@@ -40,7 +40,7 @@ const Radio = () => {
         event.preventDefault();
         try {
             await axios.patch(
-                `${process.env.REACT_APP_API_HOST}/user/radio/assign`,
+                `${import.meta.env.VITE_API_HOST}/user/radio/assign`,
                 valuesAssign
             );
             message.success("La radio a bien été assignée");
@@ -54,7 +54,7 @@ const Radio = () => {
         event.preventDefault();
         try {
             await axios.post(
-                `${process.env.REACT_APP_API_HOST}/radio/`,
+                `${import.meta.env.VITE_API_HOST}/radio/`,
                 values
             );
             message.success("La radio a bien été ajoutée");

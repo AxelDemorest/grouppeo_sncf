@@ -37,19 +37,7 @@ const PlanningCreate = () => {
         <>ssdddss</>
     ];
 
-
-
-
-
-
-
-
-
-
-
-
     const [currentStep, setCurrentStep] = useState(0);
-
 
     return (
         <styled.Container>

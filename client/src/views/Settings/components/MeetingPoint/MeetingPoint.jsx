@@ -11,7 +11,7 @@ const MeetingPoint = () => {
     useEffect(() => {
         try {
             const fetchMeetingPoint = async () => {
-                const response = await axios.get(`${process.env.REACT_APP_API_HOST}/meeting-point`);
+                const response = await axios.get(`${import.meta.env.VITE_API_HOST}/meeting-point`);
                 setMeetingPoints(response.data)
             }
 
@@ -22,7 +22,7 @@ const MeetingPoint = () => {
     }, [])
 
     const handleDelete = async (item) => {
-        await axios.delete(`${process.env.REACT_APP_API_HOST}/meeting-point/${item.id}`);
+        await axios.delete(`${import.meta.env.VITE_API_HOST}/meeting-point/${item.id}`);
         setMeetingPoints((current) =>
             current.filter((currentItem) => currentItem.id !== item.id)
         );
@@ -32,7 +32,7 @@ const MeetingPoint = () => {
         event.preventDefault();
         try {
             await axios.post(
-                `${process.env.REACT_APP_API_HOST}/meeting-point/`,
+                `${import.meta.env.VITE_API_HOST}/meeting-point/`,
                 {
                     name: name
                 }

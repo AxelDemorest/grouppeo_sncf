@@ -24,12 +24,12 @@ const AgentAdmin = () => {
 
     useEffect(() => {
         const getAgents = async () => {
-            const { data } = await axios.get(`${process.env.REACT_APP_API_HOST}/user/agents`);
+            const { data } = await axios.get(`${import.meta.env.VITE_API_HOST}/user/agents`);
             setData(data);
         };
 
         const getAllAgentsOfToday = async () => {
-            const { data } = await axios.get(`${process.env.REACT_APP_API_HOST}/user/today/agents`);
+            const { data } = await axios.get(`${import.meta.env.VITE_API_HOST}/user/today/agents`);
             setTodayAgents(data);
         };
 
@@ -38,7 +38,7 @@ const AgentAdmin = () => {
     }, []);
 
     const handleDelete = async (item) => {
-        await axios.delete(`${process.env.REACT_APP_API_HOST}/user/${item.user_id}`);
+        await axios.delete(`${import.meta.env.VITE_API_HOST}/user/${item.user_id}`);
         setData((current) =>
             current.filter((currentItem) => currentItem.user_id !== item.user_id)
         );
@@ -49,7 +49,7 @@ const AgentAdmin = () => {
 
     const onCreate = async (values, form) => {
         const { data } = await axios.post(
-            `${process.env.REACT_APP_API_HOST}/user/user`,
+            `${import.meta.env.VITE_API_HOST}/user/user`,
             values
         );
         setConfirmLoading(true);
@@ -68,7 +68,7 @@ const AgentAdmin = () => {
     const onAssign = async (date, user_id) => {
         try {
             const { data } = await axios.post(
-                `${process.env.REACT_APP_API_HOST}/user/${date}/${user_id}`,
+                `${import.meta.env.VITE_API_HOST}/user/${date}/${user_id}`,
             );
 
             setConfirmLoading(true);
@@ -96,7 +96,7 @@ const AgentAdmin = () => {
     const onGenerate = async (date) => {
         setConfirmLoading(true);
         const { data } = await axios.post(
-            `${process.env.REACT_APP_API_HOST}/planning/`,
+            `${import.meta.env.VITE_API_HOST}/planning/`,
             { day: date }
         );
         setGeneratedPlanning(data.post)

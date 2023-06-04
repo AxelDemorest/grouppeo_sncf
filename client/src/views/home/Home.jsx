@@ -18,13 +18,13 @@ const Home = () => {
 
     useEffect(() => {
         const getGroupCountsForNext5Days = () => {
-            axios.get(`${process.env.REACT_APP_API_HOST}/group/list/counts`).then((res) => {
+            axios.get(`${import.meta.env.VITE_API_HOST}/group/list/counts`).then((res) => {
                 setGroupsData(res.data);
             }).catch((err) => console.error(err));
         }
 
         const getUserCountsForNext5Days = () => {
-            axios.get(`${process.env.REACT_APP_API_HOST}/user/list/counts`).then((res) => {
+            axios.get(`${import.meta.env.VITE_API_HOST}/user/list/counts`).then((res) => {
                 setUsersData(res.data);
             }).catch((err) => console.error(err));
         }
@@ -143,185 +143,6 @@ const Home = () => {
                     </GraphicBox>
                 </Side>
             </BodyStatContainer>
-            {/* <BodyStatContainer>
-                <LeftContainer>
-                    <StatsWrapper width={'100%'}>
-                        <HeaderStatsWrapper>
-                            <ColoredSpan />
-                            <StatsTitle>
-                                Vision globale
-                            </StatsTitle>
-                        </HeaderStatsWrapper>
-                        <GlobalStats>
-                            <ChildStats>
-                                <div>
-                                    <WrapperIcon color={'#FFB7B7'}>
-                                        <IoMdTrain size={27} color={'#fff'} />
-                                    </WrapperIcon>
-                                </div>
-                                <div>
-                                    <Category>Trains</Category>
-                                    <CategoryNumber>0</CategoryNumber>
-                                </div>
-                            </ChildStats>
-                            <VerticalSeparator />
-                            <ChildStats>
-                                <div>
-                                    <WrapperIcon color={'#B7E0FF'}>
-                                        <HiUserGroup size={27} color={'#fff'} />
-                                    </WrapperIcon>
-                                </div>
-                                <div>
-                                    <Category>Groupes</Category>
-                                    <CategoryNumber>0</CategoryNumber>
-                                </div>
-                            </ChildStats>
-                            <VerticalSeparator />
-                            <ChildStats>
-                                <div>
-                                    <WrapperIcon color={'#CAE3BE'}>
-                                        <HiUserGroup size={27} color={'#fff'} />
-                                    </WrapperIcon>
-                                </div>
-                                <div>
-                                    <Category>Agents</Category>
-                                    <CategoryNumber>0</CategoryNumber>
-                                </div>
-                            </ChildStats>
-                            <VerticalSeparator />
-                            <ChildStats>
-                                <div>
-                                    <WrapperIcon color={'#DCBEE3'}>
-                                        <HiUserGroup size={27} color={'#fff'} />
-                                    </WrapperIcon>
-                                </div>
-                                <div>
-                                    <Category>Programmations</Category>
-                                    <CategoryNumber>0</CategoryNumber>
-                                </div>
-                            </ChildStats>
-                            <VerticalSeparator />
-                            <ChildStats>
-                                <div>
-                                    <WrapperIcon color={'#FFEEB7'}>
-                                        <HiUserGroup size={27} color={'#fff'} />
-                                    </WrapperIcon>
-                                </div>
-                                <div>
-                                    <Category>Utilisateurs</Category>
-                                    <CategoryNumber>0</CategoryNumber>
-                                </div>
-                            </ChildStats>
-                        </GlobalStats>
-                    </StatsWrapper>
-                    <StatsWrapper width={'100%'}>
-                        <HeaderStatsWrapper>
-                            <ColoredSpan />
-                            <StatsTitle>
-                                Graphique des groupes
-                            </StatsTitle>
-                        </HeaderStatsWrapper>
-                        <div style={{ width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly' }}>
-                            <div style={{ width: '40%', height: '250px' }}>
-                                <BarChart chartData={dataGroups} />
-                            </div>
-                            <div style={{ width: '40%', height: '250px' }}>
-                                <BarChart chartData={dataUsers} />
-                            </div>
-                        </div>
-                    </StatsWrapper>
-                    <StatsWrapper width={'100%'}>
-                        <HeaderStatsWrapper>
-                            <ColoredSpan />
-                            <StatsTitle>
-                                Dernières mises à jour
-                            </StatsTitle>
-                        </HeaderStatsWrapper>
-                        <div>
-                            <ContainerDateItem>
-                                <div>
-                                    <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                                        <ReportsDate>Jeudi 19 Janvier</ReportsDate>
-                                        <ReleaseTag>Mise à jour</ReleaseTag>
-                                    </div>
-                                    <ReportsTitle>Exemple de nouvelle mise à jour</ReportsTitle>
-                                    <ReportsUser>Axel GIL-DEMOREST</ReportsUser>
-                                </div>
-                                <Button>Lire plus</Button>
-                            </ContainerDateItem>
-                            <ContainerDateItem>
-                                <div>
-                                    <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                                        <ReportsDate>Jeudi 19 Janvier</ReportsDate>
-                                        <ReleaseTag>Mise à jour</ReleaseTag>
-                                    </div>
-                                    <ReportsTitle>Exemple de nouvelle mise à jour</ReportsTitle>
-                                    <ReportsUser>Axel GIL-DEMOREST</ReportsUser>
-                                </div>
-                                <Button>Lire plus</Button>
-                            </ContainerDateItem>
-                            <ContainerDateItem>
-                                <div>
-                                    <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                                        <ReportsDate>Jeudi 19 Janvier</ReportsDate>
-                                        <ReleaseTag>Mise à jour</ReleaseTag>
-                                    </div>
-                                    <ReportsTitle>Exemple de nouvelle mise à jour</ReportsTitle>
-                                    <ReportsUser>Axel GIL-DEMOREST</ReportsUser>
-                                </div>
-                                <Button>Lire plus</Button>
-                            </ContainerDateItem>
-                        </div>
-                    </StatsWrapper>
-                </LeftContainer>
-                <RightContainer>
-                    {/*<StatsWrapper width={'100%'}>
-                        <HeaderStatsWrapper>
-                            <ColoredSpan />
-                            <StatsTitle>
-                                Prochains jours
-                            </StatsTitle>
-                        </HeaderStatsWrapper>
-                        <div>
-                            <ContainerDateItem>
-                                <div>
-                                    <DateListItem>Jeudi 19 Janvier</DateListItem>
-                                    <NumberGroupItem>20 groupes | 10 renforts assignés à cette journée</NumberGroupItem>
-                                </div>
-                                <Button>Accéder aux programmations</Button>
-                            </ContainerDateItem>
-                            <ContainerDateItem>
-                                <div>
-                                    <DateListItem>Vendredi 20 Janvier</DateListItem>
-                                    <NumberGroupItem>20 groupes | 2 renforts assignés à cette journée</NumberGroupItem>
-                                </div>
-                                <Button>Accéder aux programmations</Button>
-                            </ContainerDateItem>
-                            <ContainerDateItem>
-                                <div>
-                                    <DateListItem>Samedi 21 Janvier</DateListItem>
-                                    <NumberGroupItem>20 groupes | 8 renforts assignés à cette journée</NumberGroupItem>
-                                </div>
-                                <Button>Accéder aux programmations</Button>
-                            </ContainerDateItem>
-                            <ContainerDateItem>
-                                <div>
-                                    <DateListItem>Dimanche 22 Janvier</DateListItem>
-                                    <NumberGroupItem>20 groupes | 2 renforts assignés à cette journée</NumberGroupItem>
-                                </div>
-                                <Button>Accéder aux programmations</Button>
-                            </ContainerDateItem>
-                            <ContainerDateItem>
-                                <div>
-                                    <DateListItem>Lundi 23 Janvier</DateListItem>
-                                    <NumberGroupItem>20 groupes | 5 renforts assignés à cette journée</NumberGroupItem>
-                                </div>
-                                <Button>Accéder aux programmations</Button>
-                            </ContainerDateItem>
-                        </div>
-                    </StatsWrapper>
-                </RightContainer>
-            </BodyStatContainer> */}
         </Container>
     );
 };
@@ -395,11 +216,7 @@ const GraphicBox = styled.div`
   background-color: #fff;
   border: 1.5px solid #eaeaea;
   border-radius: 10px;
-  display: flex;
   padding: 30px 50px;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
 `;
 
 const HeaderGraphicBox = styled.div`

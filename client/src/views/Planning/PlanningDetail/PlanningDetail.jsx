@@ -19,10 +19,10 @@ const PlanningDetail = () => {
         const fetchData = async () => {
             try {
                 const [groups, planning, planningGMP, listUsers] = await Promise.all([
-                    axios.get(`${process.env.REACT_APP_API_HOST}/group/day/${planningDate}`),
-                    axios.get(`${process.env.REACT_APP_API_HOST}/planning/day/${planningDate}/user/${userId}`),
-                    axios.get(`${process.env.REACT_APP_API_HOST}/group/day/${planningDate}/group-meeting-point/${groupMeetingPoint}`),
-                    axios.get(`${process.env.REACT_APP_API_HOST}/user/planning/${planningDate}/users`)
+                    axios.get(`${import.meta.env.VITE_API_HOST}/group/day/${planningDate}`),
+                    axios.get(`${import.meta.env.VITE_API_HOST}/planning/day/${planningDate}/user/${userId}`),
+                    axios.get(`${import.meta.env.VITE_API_HOST}/group/day/${planningDate}/group-meeting-point/${groupMeetingPoint}`),
+                    axios.get(`${import.meta.env.VITE_API_HOST}/user/planning/${planningDate}/users`)
                 ]);
 
                 setGroups(groups.data);
@@ -54,8 +54,8 @@ const PlanningDetail = () => {
         },
         {
             title: "Agent assigné (CP)",
-            dataIndex: ['group_planning', 'planning_user', 'user_cp'],
-            key: "user_cp",
+            dataIndex: ['group_planning', 'agentNumber'],
+            key: "agentNumber",
             width: 250,
         },
         {

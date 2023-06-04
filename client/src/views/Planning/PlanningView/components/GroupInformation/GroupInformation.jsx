@@ -18,7 +18,7 @@ const GroupInformation = ({ obj }) => {
 
     const createStatus = async (statusId) => {
         try {
-            await axios.post(`${process.env.REACT_APP_API_HOST}/api/group-status/${obj.group_id}/statuses/${statusId}`);
+            await axios.post(`${import.meta.env.VITE_API_HOST}/api/group-status/${obj.group_id}/statuses/${statusId}`);
             message.success('Statut mis à jour');
         } catch (error) {
             console.log(error);

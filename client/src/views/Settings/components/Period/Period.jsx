@@ -11,7 +11,7 @@ const Period = () => {
     useEffect(() => {
         try {
             const fetchPeriod = async () => {
-                const response = await axios.get(`${process.env.REACT_APP_API_HOST}/period`);
+                const response = await axios.get(`${import.meta.env.VITE_API_HOST}/period`);
                 setPeriods(response.data)
             }
 
@@ -25,7 +25,7 @@ const Period = () => {
         event.preventDefault();
         try {
             await axios.post(
-                `${process.env.REACT_APP_API_HOST}/period/`,
+                `${import.meta.env.VITE_API_HOST}/period/`,
                 {
                     name: name
                 }

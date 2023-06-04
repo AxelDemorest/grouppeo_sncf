@@ -6,16 +6,15 @@ function BarChart({ chartData }) {
         <Bar
             data={chartData}
             height={400}
-            width={1150}
             options={{
                 maintainAspectRatio: false,
                 plugins: {
                     legend: {
-                        position: 'right',
+                        position: 'bottom',
                         labels: {
                             padding: 40,
                             font: {
-                                size: 20,
+                                size: 14,
                             }
                         }
                     }

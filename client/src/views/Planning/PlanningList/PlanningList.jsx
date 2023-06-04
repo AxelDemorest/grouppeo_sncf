@@ -14,7 +14,7 @@ const PlanningList = () => {
 
     useEffect(() => {
         const getPlannings = () => {
-            axios.get(`${process.env.REACT_APP_API_HOST}/planning`).then((res) => {
+            axios.get(`${import.meta.env.VITE_API_HOST}/planning`).then((res) => {
                 setPlanningList(res.data);
             }).catch((err) => console.error(err));
         }

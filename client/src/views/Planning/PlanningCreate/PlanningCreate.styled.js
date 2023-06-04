@@ -12,7 +12,7 @@ export const Col = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 30%;
+    width: 35%;
 `;
 
 export const Logo = styled.img`

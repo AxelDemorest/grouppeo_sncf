@@ -52,7 +52,7 @@ export class UserService {
   }
 
   async getAgents(): Promise<User[]> {
-    return this.usersRepository.findBy({ user_type: UserType.AGENT });
+    return await this.usersRepository.findBy({ user_type: UserType.AGENT });
   }
 
   async getDPXByCp(user_cp: string): Promise<User> {

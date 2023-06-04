@@ -33,7 +33,7 @@ const IndependentGroups = () => {
 
   useEffect(() => {
     const getTrains = async () => {
-      const { data } = await axios.get(`${process.env.REACT_APP_API_HOST}/train/train`);
+      const { data } = await axios.get(`${import.meta.env.VITE_API_HOST}/train/train`);
       setRenderData(data);
     };
 
@@ -126,7 +126,7 @@ const IndependentGroups = () => {
         period,
       };
 
-      await performAxiosCall(`${process.env.REACT_APP_API_HOST}/train/`, body, isImport);
+      await performAxiosCall(`${import.meta.env.VITE_API_HOST}/train/`, body, isImport);
       setIsDataImport(true);
     };
 
@@ -136,7 +136,7 @@ const IndependentGroups = () => {
   };
 
   const onCreate = async (values, form) => {
-    await axios.patch(`${process.env.REACT_APP_API_HOST}/group/${values.group_id}`, values);
+    await axios.patch(`${import.meta.env.VITE_API_HOST}/group/${values.group_id}`, values);
     setIsDataImport((c) => !c);
     setConfirmLoading(true);
     setTimeout(() => {
@@ -168,7 +168,7 @@ const IndependentGroups = () => {
   };
 
   const switchGroupType = async (record) => {
-    await axios.patch(`${process.env.REACT_APP_API_HOST}/group/${record.group_id}/type/switch`);
+    await axios.patch(`${import.meta.env.VITE_API_HOST}/group/${record.group_id}/type/switch`);
     setIsDataImport(!isDataImport)
   }
 
@@ -279,8 +279,11 @@ const IndependentGroups = () => {
               <Button onClick={() => setOpenUpdateModal((c) => !c)} style={{ marginRight: '20px' }}>
                 Mettre à jour les groupes de saison
               </Button>
-             <Button onClick={() => setOpenImportModal((c) => !c)}>
+             <Button onClick={() => setOpenImportModal((c) => !c)} style={{ marginRight: '20px' }}>
                 Importer les groupes de saison
+              </Button>
+              <Button onClick={() => setOpenImportModal((c) => !c)}>
+                Importer les voies via OpenGOV
               </Button>
             </div>
           </HeaderTable>

@@ -11,8 +11,17 @@ export class GroupService {
     @InjectRepository(Group) private groupsRepository: Repository<Group>,
   ) {}
 
-  getGroups(): Promise<Group[]> {
-    return this.groupsRepository.find();
+  async findSupportedGroups(date: string) {
+    const formatDate = date.replace(new RegExp('-', 'g'), '/');
+
+    return await this.groupsRepository
+      .createQueryBuilder('group')
+      .leftJoinAndSelect('group.group_train', 'train')
+      .where('train.train_date = :train_date', { train_date: formatDate })
+      .andWhere('group.group_is_supported = :group_is_supported', {
+        group_is_supported: true,
+      })
+      .getMany();
   }
 
   getGroupById(group_id: number): Promise<Group> {
@@ -115,5 +124,19 @@ export class GroupService {
         group_is_supported: true,
       })
       .getMany();
+  }
+
+  async updateTrainTrack(id: number, trainTrack: string) {
+    const group = await this.groupsRepository
+      .createQueryBuilder('group')
+      .leftJoinAndSelect('group.group_train', 'train')
+      .where('group.group_id = :id', { id })
+      .getOne();
+
+    if (!group) {
+      throw new Error(`Group with id ${id} not found`);
+    }
+    group.group_train.train_track = trainTrack;
+    return this.groupsRepository.save(group);
   }
 }

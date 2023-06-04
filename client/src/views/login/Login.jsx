@@ -39,7 +39,7 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const user = await axios.post(`${process.env.REACT_APP_API_HOST}/auth/login`, values);
+            const user = await axios.post(`${import.meta.env.VITE_API_HOST}/auth/login`, values);
             dispatch({ type: "LOGIN_SUCCESS", payload: jwt_decode(user.data.access_token) });
             navigate(state?.path || "/", { replace: true });
         } catch (err) {

@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Planning } from '../models/planning.entity';
@@ -6,8 +6,11 @@ import { TrainService } from '../../train/service/train.service';
 import { Train } from '../../train/models/train.entity';
 import { UserService } from '../../user/service/user.service';
 import { User } from '../../user/models/user.entity';
+import { createPlanningDTO, PlanningDTO } from '../models/dto/planning.dto';
+import { setEndTime, diffHour } from '../helper/planning.helper';
+import { AssignAgentDto } from '../models/dto/assign-agent.dto';
 import * as moment from 'moment';
-import { createPlanningDTO } from '../models/planning.dto';
+import 'moment/locale/fr';
 
 @Injectable()
 export class PlanningService {
@@ -20,7 +23,197 @@ export class PlanningService {
     private planningRepository: Repository<Planning>,
   ) {}
 
+  async assignAgentToUser(assignAgentDto: AssignAgentDto): Promise<Planning> {
+    const { userId, agentNumber, day } = assignAgentDto;
+
+    const findUser = await this.userService.findUserById(userId);
+
+    // Trouver l'utilisateur avec l'userId donné
+    const userPlanning = await this.planningRepository.findOne({
+      where: {
+        agentNumber: agentNumber,
+        planning_day: day,
+      },
+    });
+
+    // If the planning is not found, throw an error or handle it appropriately
+    if (!userPlanning) return null;
+
+    // Mettre à jour le numéro d'agent pour cet utilisateur
+    userPlanning.planning_user = findUser;
+
+    // Sauvegarder les modifications
+    return this.planningRepository.save(userPlanning);
+  }
+
   async createPlanning(day: string) {
+    const formatDate = day.replace(new RegExp('-', 'g'), '/');
+    const trains: Train[] =
+      await this.trainService.findTrainsOfOneDayWithSupportedGroups(day);
+
+    function assignGroupToAgent(agent, group, agents) {
+      if (!isAgentAvailable(agent, group)) {
+        return false;
+      }
+
+      // Si l'agent est disponible et n'est pas surchargé, assignez le groupe à l'agent
+      agent.groups.push(group);
+      return true;
+    }
+
+    function isAgentAvailable(agent, group) {
+      const groupPrestation = group.group_prestation;
+
+      /*(groupPrestation &&
+          agent.groups.length > 0 &&
+          moment(
+            agent.groups[agent.groups.length - 1].group_meeting_time.replace(
+              'H',
+              ':',
+            ),
+            'H:mm',
+          )
+            .add(60, 'minutes')
+            .isBefore(groupMeetingTime)) ||*/
+
+      if (agent.endTime.length > 0) {
+        if (
+          moment(group.group_meeting_time.replace('H', ':'), 'H:mm')
+            .add(25, 'minutes')
+            .isAfter(moment(agent.endTime, 'H:mm'))
+        )
+          return false;
+      }
+
+      if (agent.groups.length > 0) {
+        if (
+          moment(
+            agent.groups[agent.groups.length - 1].group_meeting_time.replace(
+              'H',
+              ':',
+            ),
+            'H:mm',
+          )
+            .add(25, 'minutes')
+            .isAfter(moment(group.group_meeting_time.replace('H', ':'), 'H:mm'))
+        )
+          return false;
+      }
+
+      return true;
+    }
+
+    function isAgentOverloaded(agent, agents) {
+      const averageGroups = calculateAverageGroups(agents);
+
+      return agent.groups.length > averageGroups;
+    }
+
+    function findAgentWithLeastGroups(agents) {
+      let minGroups = Number.MAX_SAFE_INTEGER;
+      let agentWithLeastGroups = null;
+
+      for (const agent of agents) {
+        if (agent.groups.length < minGroups) {
+          minGroups = agent.groups.length;
+          agentWithLeastGroups = agent;
+        }
+      }
+
+      return agentWithLeastGroups;
+    }
+
+    function calculateAverageGroups(agents) {
+      const totalAgents = agents.length;
+
+      if (totalAgents === 0) {
+        return 0; // ou retourner une valeur par défaut appropriée
+      }
+
+      if (totalAgents === 1) {
+        return agents[0].groups.length;
+      }
+
+      let totalGroups = 0;
+
+      for (const agent of agents) {
+        totalGroups += agent.groups.length;
+      }
+
+      return totalGroups / totalAgents;
+    }
+
+    const agents = [];
+
+    for (const train of trains) {
+      for (const group of train.train_groups) {
+        if (!group.group_meeting_time) continue;
+        let groupAssigned = false;
+
+        // Check if there are any agents yet
+        if (agents.length < 1) {
+          const newAgent = {
+            id: agents.length + 1,
+            groups: [],
+            startTime: group.group_meeting_time,
+            endTime: setEndTime(group.group_meeting_time),
+          };
+          agents.push(newAgent);
+          assignGroupToAgent(newAgent, group, agents);
+          continue;
+        }
+
+        // Get agent with the least groups and try to assign the group to them
+        const agentWithLeastGroups = findAgentWithLeastGroups(agents);
+        if (assignGroupToAgent(agentWithLeastGroups, group, agents)) {
+          groupAssigned = true;
+        } else {
+          // If not successful, try to assign to the other agents
+          for (const agent of agents) {
+            if (assignGroupToAgent(agent, group, agents)) {
+              groupAssigned = true;
+              break;
+            }
+          }
+        }
+
+        if (
+          moment(group.group_meeting_time.replace('H', ':'), 'H:mm').isAfter(
+            moment('16:00', 'H:mm'),
+          )
+        )
+          continue;
+        if (!groupAssigned) {
+          const newAgent = {
+            id: agents.length + 1,
+            groups: [],
+            startTime: group.group_meeting_time,
+            endTime: setEndTime(group.group_meeting_time),
+          };
+          agents.push(newAgent);
+          newAgent.groups.push(group);
+        }
+      }
+    }
+
+    const result = [];
+    for (const agent of agents) {
+      const planningDTO: PlanningDTO = {
+        agentNumber: agent.id,
+        planning_groups: agent.groups,
+        planning_day: formatDate,
+        start_time: agent.startTime,
+        end_time: agent.endTime,
+      };
+
+      const savedPlanning = await this.planningRepository.save(planningDTO);
+      result.push(savedPlanning);
+    }
+
+    return result;
+  }
+
+  async createPlanningInDev(day: string) {
     const formatDate = day.replace(new RegExp('-', 'g'), '/');
     const data: Train[] =
       await this.trainService.findTrainsOfOneDayWithSupportedGroups(day);
@@ -29,6 +222,7 @@ export class PlanningService {
     const users: createPlanningDTO[] = [];
     const listLastTrains = [];
     let assignedUserAndTrain: { user: User; train: Train };
+    let consecutiveTrainCount = 0;
 
     const diffHour = (firstHour: string, secondHour: string) => {
       const h1 = firstHour.split('H');
@@ -69,6 +263,19 @@ export class PlanningService {
             const findUser = users.find(
               (x) => x.planning_user.user_id === agents[i].user_id,
             );
+
+            // Si l'agent actuel est le même que le dernier et que le compteur de trains consécutifs atteint 2, passez à l'agent suivant
+            if (
+              assignedUserAndTrain?.user?.user_id === agents[i].user_id &&
+              consecutiveTrainCount >= 2
+            )
+              continue;
+
+            // Si l'agent actuel n'est pas le même que le dernier, réinitialisez le compteur de trains consécutifs
+            if (assignedUserAndTrain?.user?.user_id !== agents[i].user_id) {
+              consecutiveTrainCount = 0;
+            }
+
             if (findUser) {
               if (
                 moment(group.group_meeting_time.replace('H', ':'), 'H:mm')
@@ -114,6 +321,7 @@ export class PlanningService {
                   user: agents[i],
                   train: train,
                 };
+                consecutiveTrainCount++;
                 break;
               }
 
@@ -127,6 +335,7 @@ export class PlanningService {
                   user: agents[i],
                   train: train,
                 };
+                consecutiveTrainCount++;
                 break;
               }
             } else {
@@ -145,6 +354,7 @@ export class PlanningService {
                 user: agents[i],
                 train: train,
               };
+              consecutiveTrainCount++;
               break;
             }
           }
