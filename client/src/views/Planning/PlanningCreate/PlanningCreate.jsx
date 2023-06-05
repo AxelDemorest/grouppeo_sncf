@@ -5,15 +5,15 @@ import FirstStep from "./components/FirstStep/FirstStep";
 import {Button, Form} from "antd";
 
 const PlanningCreate = () => {
-    const [form] = Form.useForm();
     const [page, setPage] = useState(0);
+    const [currentStep, setCurrentStep] = useState(0);
     const [steps, setSteps] = useState([
         {
             title: 'Configuration',
             status: 'todo',
         },
         {
-            title: 'Vérification',
+            title: 'Génération',
             status: 'todo',
         },
         {
@@ -24,11 +24,11 @@ const PlanningCreate = () => {
     ]);
 
     const onFinish = (values) => {
-        form.validateFields().then(() => {
             const newSteps = [...steps];
             newSteps[page].status = 'finish';
+            setCurrentStep(currentStep + 1);
             setPage(page + 1);
-        });
+            console.log(values)
     };
 
     const componentList = [
@@ -36,8 +36,6 @@ const PlanningCreate = () => {
         <>sss</>,
         <>ssdddss</>
     ];
-
-    const [currentStep, setCurrentStep] = useState(0);
 
     return (
         <styled.Container>

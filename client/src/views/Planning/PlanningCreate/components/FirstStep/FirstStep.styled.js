@@ -20,3 +20,13 @@ export const Header = styled.div`
     width: 100%;
     border-bottom: 1px solid #E5E5E5;
 `;
+
+export const Form = styled.form`
+  padding: 30px;
+`;
+
+export const ShortDescription = styled.p`
+  color: #848484;
+  margin-bottom: 20px;
+  font-size: 14px;
+`;

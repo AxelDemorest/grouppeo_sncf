@@ -36,7 +36,7 @@ export const StepList = styled.div`
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    width: 80%;
+    width: 100%;
 `;
 
 export const StepContainer = styled.div`
@@ -47,7 +47,7 @@ export const StepNumber = styled.div`
   text-transform: uppercase;
   font-size: 13px;
   font-weight: bold;
-  margin-bottom: 6px;
+  margin-bottom: 10px;
   color: ${({ status, current }) => {
     if (current) {
       return '#1890ff';
