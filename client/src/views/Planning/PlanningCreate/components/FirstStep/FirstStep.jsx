@@ -1,10 +1,23 @@
-import React from 'react';
+import React, {useState} from 'react';
 import * as styled from "./FirstStep.styled";
 import {Button, DatePicker, Form} from "antd";
+import moment from "moment";
 
 const FirstStep = ({ title, onFinish }) => {
-    const onFinishFailed = (errorInfo) => {
-        console.log('Failed:', errorInfo);
+    const [values, setValues] = useState({
+        date: ''
+    });
+    const onChange = (date, dateString) => {
+        const formatDate = new Date(dateString).toLocaleDateString('fr-FR', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+        }).replace(/\//g, '-');
+        setValues(values => ({...values, date: dateString}));
+    };
+
+    const onSubmit = () => {
+      onFinish(values);
     };
 
     return (
@@ -12,43 +25,20 @@ const FirstStep = ({ title, onFinish }) => {
             <styled.Header>
                 <styled.GenerateTitle>{title}</styled.GenerateTitle>
             </styled.Header>
-            <Form
-                name="basic"
-                initialValues={{
-                    remember: true,
-                }}
-                onFinish={onFinish}
-                onFinishFailed={onFinishFailed}
-                autoComplete="off"
-                layout={'vertical'}
+            <styled.Form
+                name="dateForm"
+                onSubmit={onSubmit}
             >
-                <Form.Item
-                    label="Date de la programmation"
-                    name="date"
-                    rules={[
-                        {
-                            required: true,
-                            message: 'La date est requise',
-                        },
-                    ]}
-                    style={{
-                        padding: '20px' ,
-                        width: '50%',
-                        margin: 0,
-                    }}
-                >
-                    <DatePicker style={{ width: '100%' }} />
-                </Form.Item>
-                <Form.Item
-                    style={{
-                        padding: '0 20px 0 20px'
-                    }}
-                >
+                    <styled.ShortDescription>Veuillez définir la journée de génération de programmation que vous souhaitez.</styled.ShortDescription>
+                    <DatePicker
+                        defaultValue={values.date}
+                        onChange={onChange}
+                        style={{ width: '30%', marginRight: '20px' }}
+                    />
                     <Button style={{ backgroundColor: '#151d3f', color: "#fff" }} htmlType="submit">
                         Continuer
                     </Button>
-                </Form.Item>
-            </Form>
+            </styled.Form>
         </styled.GenerateContainer>
     );
 };
