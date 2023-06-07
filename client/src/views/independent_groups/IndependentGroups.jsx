@@ -51,7 +51,7 @@ const IndependentGroups = () => {
       "Date-départ": "train_date",
       "N°-train": "train_number",
       "Heure-départ": "train_hour",
-      "Destination2": "group_destination",
+      "Destination": "group_destination",
       "Nom-groupe": "group_name",
       "Nombre-pax": "group_total_travellers",
       "N°-voiture": "group_car_number",
@@ -60,7 +60,7 @@ const IndependentGroups = () => {
       "Point-RV": "group_meeting_point",
       "Heure-RV": "group_meeting_time",
       "Responsable-jour-du-départ": "group_responsable_departure_day",
-      "Tel-\n-responsable": "group_responsable_phone_departure_day",
+      "Tel-responsable": "group_responsable_phone_departure_day",
       "Mail": "group_mail",
     };
 
