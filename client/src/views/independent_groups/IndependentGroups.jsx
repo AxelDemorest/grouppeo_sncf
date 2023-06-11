@@ -57,10 +57,10 @@ const IndependentGroups = () => {
       "N°-voiture": "group_car_number",
       "Type-Groupe": "group_type",
       "Prestation": "group_prestation",
-      "Point-RV": "group_meeting_point",
+      "POINT-DE-RDV": "group_meeting_point",
       "Heure-RV": "group_meeting_time",
       "Responsable-jour-du-départ": "group_responsable_departure_day",
-      "Tel-responsable": "group_responsable_phone_departure_day",
+      "Tél-organisateur": "group_responsable_phone_departure_day",
       "Mail": "group_mail",
     };
 
@@ -125,6 +125,8 @@ const IndependentGroups = () => {
         trains: convertData,
         period,
       };
+
+      console.log(fileData)
 
       await performAxiosCall(`${import.meta.env.VITE_API_HOST}/train/`, body, isImport);
       setIsDataImport(true);

@@ -43,6 +43,7 @@ export class TrainService {
       groupValues.group_type = enumGroupType[groupValues.group_type]
         ? enumGroupType[groupValues.group_type]
         : 'non défini';
+      // TODO : Faire aussi quand la case est vide
       groupValues.group_is_supported =
         groupValues.group_meeting_point?.trim().toLowerCase() !== 'non';
       if (foundTrain) {
