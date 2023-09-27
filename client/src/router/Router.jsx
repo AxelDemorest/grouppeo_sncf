@@ -1,47 +1,57 @@
 import React from 'react';
 import {BrowserRouter, Route, Routes} from "react-router-dom";
-import Login from "../views/login/Login";
+import Login from "../views/authentication/login/Login";
 import RequireAuth from "../components/parents/requireAuth/RequireAuth";
-import Home from "../views/home/Home";
-import IndependentGroups from "../views/independent_groups/IndependentGroups";
-import SupportedGroup from "../views/supportedGroup/SupportedGroup";
-import UserAdmin from "../views/user_admin/UserAdmin";
-import AgentAdmin from "../views/agent_admin/AgentAdmin";
-import PlanningView from "../views/Planning/PlanningView/PlanningView";
-import PlanningList from "../views/Planning/PlanningList/PlanningList";
-import PlanningDetail from "../views/Planning/PlanningDetail/PlanningDetail";
-import Settings from "../views/Settings/Settings";
-import Supervision from "../views/Supervision/Supervision";
-import PlanningCreate from "../views/Planning/PlanningCreate/PlanningCreate";
+import Dashboard from "../views/dashboard/Dashboard";
+import AutonomousGroups from "../views/groups/autonomousGroups/AutonomousGroups";
+import SupportGroups from "../views/groups/supportGroups/SupportGroups";
+import Users from "../views/management/users/Users";
+import Agents from "../views/management/agents/Agents";
+import PlanningView from "../views/planning/planningView/PlanningView";
+import PlanningList from "../views/planning/planningList/PlanningList";
+import PlanningDetail from "../views/planning/planningDetail/PlanningDetail";
+import Settings from "../views/settings/Settings";
+import Supervision from "../views/supervision/Supervision";
+import PlanningCreate from "../views/planning/planningCreate/PlanningCreate";
+import ResetPassword from "../views/authentication/resetPassword/ResetPassword";
+import SupervisionV2 from "../views/supervision/supervisionV2/SupervisionV2";
+import SupervisionV3 from "../views/supervision/supervisionV3/SupervisionV3";
+import Radios from "../views/radios/Radios";
 
 const Router = () => {
     return (
         <BrowserRouter>
             <Routes>
                 <Route exact path="/connexion" element={<Login />}/>
+                <Route exact path="/change-password" element={<ResetPassword />}/>
                 <Route exact path="/" element={
                     <RequireAuth>
-                        <Home />
+                        <Dashboard />
                     </RequireAuth>
                 }/>
                 <Route exact path="/groupes-autonomes" element={
                     <RequireAuth>
-                        <IndependentGroups />
+                        <AutonomousGroups />
                     </RequireAuth>
                 }/>
                 <Route exact path="/groupes-pris-en-charge" element={
                     <RequireAuth>
-                        <SupportedGroup />
+                        <SupportGroups />
                     </RequireAuth>
                 }/>
                 <Route exact path="/gestion-des-utilisateurs" element={
                     <RequireAuth>
-                        <UserAdmin />
+                        <Users />
                     </RequireAuth>
                 }/>
                 <Route exact path="/gestion-des-agents" element={
                     <RequireAuth>
-                        <AgentAdmin />
+                        <Agents />
+                    </RequireAuth>
+                }/>
+                <Route exact path="/gestion-des-radios" element={
+                    <RequireAuth>
+                        <Radios />
                     </RequireAuth>
                 }/>
                 <Route exact path="/planning" element={
@@ -54,7 +64,7 @@ const Router = () => {
                         <PlanningList />
                     </RequireAuth>
                 }/>
-                <Route exact path="/planning-details/date/:planningDate" element={
+                <Route exact path="/date/:planningDate/planning" element={
                     <RequireAuth>
                         <PlanningDetail />
                     </RequireAuth>
@@ -66,7 +76,7 @@ const Router = () => {
                 }/>
                 <Route exact path="/supervision" element={
                     <RequireAuth>
-                        <Supervision />
+                        <SupervisionV3 />
                     </RequireAuth>
                 }/>
                 <Route exact path="/creation-planning" element={

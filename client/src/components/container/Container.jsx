@@ -6,7 +6,7 @@ import { MdOutlineContactSupport } from 'react-icons/md';
 import { GiHamburgerMenu } from 'react-icons/gi';
 import Header from "../Layouts/Header/Header";
 
-const Container = ({children, title}) => {
+const Container = ({children, title, header = true}) => {
     const [showSideBar, setShowSideBar] = useState(false);
     const toggleSideBar = () => setShowSideBar(!showSideBar);
 
@@ -18,7 +18,7 @@ const Container = ({children, title}) => {
             <Wrapper>
                 <SideBar showSideBar={showSideBar} toggleSideBar={toggleSideBar} />
                 <DashboardContainer>
-                    <Header title={title} />
+                    { header && <Header title={title} /> }
                     {children}
                     <FixedButton><MdOutlineContactSupport size={27} /></FixedButton>
                 </DashboardContainer>

@@ -1,8 +1,8 @@
 import { Injectable, NotAcceptableException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { User } from 'src/entities/user/models/user.entity';
-import { UserService } from '../../entities/user/service/user.service';
+import { User } from 'src/modules/user/models/user.entity';
+import { UserService } from '../../modules/user/service/user.service';
 
 @Injectable()
 export class AuthService {
@@ -14,8 +14,8 @@ export class AuthService {
   async validateUser(email: string, password: string): Promise<any> {
     const user = await this.userService.getUserByEmail(email);
     if (!user) throw new NotAcceptableException('could not find the user');
-    //const passwordValid = await bcrypt.compare(password, user.user_password);
-    if (user && password === user.user_password) {
+    const passwordValid = await bcrypt.compare(password, user.user_password);
+    if (user && passwordValid) {
       return user;
     }
     return null;
@@ -26,6 +26,7 @@ export class AuthService {
       email: user.user_mail,
       cp: user.user_cp,
       role: user.user_type,
+      confirmed: user.confirmed,
       sub: user.user_id,
     };
     return {

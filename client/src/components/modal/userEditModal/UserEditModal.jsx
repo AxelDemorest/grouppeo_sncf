@@ -65,7 +65,7 @@ const UserEditModal = ({
                         <Select>
                             <Select.Option value="Administrateur">Administrateur</Select.Option>
                             <Select.Option value="UO service">UO Service</Select.Option>
-                            <Select.Option value="Agent">Agent</Select.Option>
+                            <Select.Option value="Agents">Agents</Select.Option>
                             <Select.Option value="Utilisateur">Utilisateur</Select.Option>
                         </Select>
                     </FormItem>

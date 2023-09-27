@@ -33,26 +33,28 @@ const NestedTableTrains = (props) => {
     }, [props.data, props.inputText])
 
   return (
-    <NestedTable
-      scroll={{ y: 920, x: 920 }} // mac : 500 // pc : 920
-      columns={props.columns}
-      style={{ border: '2px solid #F0F0F0', backgroundColor: '#fff' }}
-      expandable={{
-        expandedRowRender: (train) => (
-          <ExpandedTable
-            groups={train.train_groups}
-            expandedColumns={props.expandedColumns}
-          />
-        ),
-      }}
-      pagination={{ pageSize: 20 }}
-      dataSource={data}
-    />
+      <NestedTable
+          scroll={{ y: 920, x: 920 }}
+          key={data.length}
+          columns={props.columns}
+          expandable={{
+              expandedRowRender: (train) => (
+                  <ExpandedTable
+                      groups={train.train_groups}
+                      expandedColumns={props.expandedColumns}
+                  />
+              ),
+              defaultExpandAllRows: true,
+          }}
+          pagination={false}
+          dataSource={data}
+      />
   );
 };
 
 const NestedTable = styled(Table)`
-  margin: 0;
+  margin-top: 10px;
+  border-top: 1px solid #ececec;
 `;
 
 export default NestedTableTrains;

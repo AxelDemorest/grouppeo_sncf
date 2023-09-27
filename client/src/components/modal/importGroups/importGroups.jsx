@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Button, Form, Input, Modal, Select, Upload } from "antd";
 import { UploadOutlined } from '@ant-design/icons';
 import styled from "styled-components";
+import axios from "axios";
 
 const ImportGroups = ({
     open,
@@ -10,9 +11,13 @@ const ImportGroups = ({
     confirmLoading,
 }) => {
     const [message, setMessage] = useState("");
+    const [isValidPeriod, setIsValidPeriod] = useState(false);
     const [form] = Form.useForm();
-    const handleChange = event => {
+    const handleChange = async (event) => {
         setMessage(event.target.value);
+        const period = await axios.get(`${import.meta.env.VITE_API_HOST}/api/period/${event.target.value}`)
+        if (!period.data) setIsValidPeriod(false)
+        else setIsValidPeriod(true)
     };
     const normFile = (e) => {
         if (Array.isArray(e)) {
@@ -64,11 +69,19 @@ const ImportGroups = ({
                             <Button icon={<UploadOutlined />}>Click to upload</Button>
                         </Upload>
                     </FormItem>
-                    <FormItem name="period" label="Période">
-                        <Input onChange={handleChange} value={message} placeholder="indiquez le nom de la saison que vous importez (ex : Hiver2022)" />
-                    </FormItem>
+                    <div>
+                        <FormItem name="period" label="Période">
+                            <Input
+                                onChange={handleChange}
+                                value={message}
+                                placeholder="indiquez le nom de la saison que vous importez (ex : Hiver2022)"
+                                style={{ width: '400px' }}
+                            />
+                        </FormItem>
+                        <p>{ isValidPeriod && message.length > 0 ? 'La période existe' : 'La période n\'existe pas' }</p>
+                    </div>
                 </Form>
-                <p>Notez bien le nom de la période que vous saisissez dans le champs car si vous uploadez une nouvelle version du fichier, il faudrait noter le nom de la période exacte.</p>
+                <p style={{ color: 'red', fontWeight: 'bold' }}>Assignez correctement les jours aux bonnes périodes, par exemple, tout le mois de juillet dans la période Été 2023</p>
             </Modal>
         </>
     );
@@ -82,6 +95,7 @@ const FormModal = styled(Form)`
 
 const FormItem = styled(Form.Item)`
   margin-right: 20px !important;
+  margin-bottom: 5px;
   width: 45%;
 `;
 

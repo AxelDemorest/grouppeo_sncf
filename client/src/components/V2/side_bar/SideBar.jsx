@@ -2,17 +2,19 @@ import React, {useContext, useMemo} from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { TfiStatsUp } from 'react-icons/tfi';
-import { FiHelpCircle } from 'react-icons/fi';
+import { FiHelpCircle, FiRadio } from 'react-icons/fi';
 import { BsListCheck, BsBriefcase } from 'react-icons/bs';
 import { RiMapPinTimeLine } from 'react-icons/ri';
 import { AiOutlineUsergroupDelete, AiOutlineUsergroupAdd, AiOutlineEye, AiOutlineUserAdd, AiOutlineSetting } from 'react-icons/ai';
 import logo from '../../../assets/GrouppeoSideBar.png';
 import './sideBar.css';
 import {AuthContext} from "../../../context/AuthContext";
+import jwt_decode from "jwt-decode";
 
 const SideBar = ({ showSideBar, toggleSideBar }) => {
 
-    const { user } = useContext(AuthContext);
+    const { token } = useContext(AuthContext);
+    const user = jwt_decode(token);
 
     const navItems = useMemo(() => [
         {
@@ -23,16 +25,15 @@ const SideBar = ({ showSideBar, toggleSideBar }) => {
                 { to: "/groupes-pris-en-charge", icon: <AiOutlineUsergroupAdd className="sideBarIcon" />, label: "Groupes pris en charge" },
                 { to: "/supervision", icon: <AiOutlineEye className="sideBarIcon" />, label: "Supervision" },
                 { to: "/liste-des-plannings", icon: <BsListCheck className="sideBarIcon" />, label: "Les plannings" },
-                { to: "/gestion-des-utilisateurs", icon: <AiOutlineUserAdd className="sideBarIcon" />, label: "Gestion des utilisateurs" },
+                { to: "/gestion-des-radios", icon: <FiRadio className="sideBarIcon" />, label: "Gestion des radios" },
                 { to: "/gestion-des-agents", icon: <BsBriefcase className="sideBarIcon" />, label: "Gestion des agents" },
-                { to: "/planning", icon: <RiMapPinTimeLine className="sideBarIcon" />, label: "Mon espace agent" },
+                { to: "/gestion-des-utilisateurs", icon: <AiOutlineUserAdd className="sideBarIcon" />, label: "Gestion des utilisateurs" },
             ],
         },
         {
             role: "Agent",
             items: [
                 { to: "/", icon: <TfiStatsUp className="sideBarIcon" />, label: "Tableau de bord" },
-                { to: "/planning", icon: <RiMapPinTimeLine className="sideBarIcon" />, label: "Mon espace agent" },
             ],
         },
         {
@@ -58,14 +59,19 @@ const SideBar = ({ showSideBar, toggleSideBar }) => {
     return (
         <SideBarContainer showSideBar={showSideBar}>
             <StickyContainer>
-                <div style={{ display: 'flex', justifyContent: 'flex-start', padding: '0 35px' }}>
-                    <Logo src={logo} alt="Logo" width='18%'></Logo>
-                </div>
+                <Header>
+                    <Logo src={logo} alt="Logo" width='18%' />
+                    <h1>Grouppeo</h1>
+                </Header >
+                <User>
+                    <p style={{ marginBottom: '10px' }}>{user.email}</p>
+                    <p style={{ color: '#95959b' }}>{user.role}</p>
+                </User>
                 <NavItems className='navItems' onClick={toggleSideBar}>
                     <>
                         {navItemsByRole.map((item, index) => (
                             <NavLink key={index} to={item.to}>
-                                {item.icon} {item.label}
+                                <span>{item.icon}</span> {item.label}
                             </NavLink>
                         ))}
                     </>
@@ -84,7 +90,7 @@ const SideBar = ({ showSideBar, toggleSideBar }) => {
 const SideBarContainer = styled.div`
   width: 270px;
   z-index: 1;
-  background-color: #151d3f;
+  background-color: #2F3349;
   position: fixed;
   left: 0;
   height: 100%;
@@ -103,39 +109,77 @@ const StickyContainer = styled.div`
   height: 100%;
 `;
 
+const Header = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 0 31px 31px 31px;
+  margin-top: 30px;
+  border-bottom: 1px solid #434551;
+
+  h1 {
+    font-size: 1.7rem;
+    margin: 4px 0 0 15px;
+    color: white;
+    font-family: 'MontserratRegular', sans-serif;
+    letter-spacing: -1px;
+    font-weight: bold;
+  }
+`;
+
 const Logo = styled.img`
-    margin-top: 30px;
-    border-radius: 5px;
+  border-radius: 5px;
+`;
+
+const User = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: rgb(52, 57, 81);
+  border: 1px solid #515466;
+  border-radius: 10px;
+  color: white;
+  padding: 0 15px;
+  margin: 30px 0 20px 0;
+  width: 85%;
+  height: 100px;
+  
+  p {
+    margin: 0;
+  }
 `;
 
 const NavItems = styled.ul`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start; 
-    padding: 0;
-    height: 75%;
-    width: 100%;
-    margin-top: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start; 
+  padding: 0;
+  height: 75%;
+  width: 100%;
 `
 
 const NavLink = styled(Link)`
     &:hover {
         color: #e8eaed;
+        background: #34394D;
     }
     transition: color 0.2s, background-color 0.2s;
     cursor: pointer;
-    border-radius: 10px;
     font-size: 16.5px;
     width: 100%;
-    padding: 13px 0;
+    padding: 20px 0 20px 14px;
     text-align: center;
-    color: #8e91a3;
+    color: #9A9CB7;
     font-weight: 500;
     text-decoration: none;
     display: flex;
     align-items: center;
-    margin-bottom: 25px;
+  
+  span svg {
+    margin-right: 12px;
+    margin-bottom: 0;
+  }
 `;
 
 const NavLinkFooter = styled(NavLink)`
@@ -144,7 +188,7 @@ const NavLinkFooter = styled(NavLink)`
 `;
 
 const Footer = styled.div`
-  width: 92%;
+  width: 100%;
   height: 25%;
   display: flex;
   flex-direction: column;
